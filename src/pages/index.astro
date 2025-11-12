@@ -1,0 +1,865 @@
+---
+// @src/pages/index.astro (VERSIÓN 5.7 - Paleta V5.1 y Fuentes V5.0 Aplicadas)
+import { getEntry, getCollection, type CollectionEntry } from "astro:content";
+import Layout from "../layouts/Layout.astro";
+import { mdToHtml } from "../utils/markdown";
+import ProductCard from "../components/ProductCard.astro";
+import ProjectCardV4 from "../components/ProjectCardV4.astro";
+
+// Cargar datos del CMS
+const home = await getEntry("pages", "home");
+const allProductos = await getCollection("productos");
+const allProyectos = await getCollection("proyectos");
+const contacto = await getEntry("informacion-de-contacto", "general");
+const ajustes = await getEntry("ajustes", "home");
+const allClientes = await getCollection("clientes");
+
+// Validar datos con placeholders (SEO)
+const title =
+  ajustes?.data.title ??
+  "Revisar configuración de SEO en CMS - Titulo no definido";
+const description =
+  ajustes?.data.description ??
+  "Revisar configuración de SEO en CMS - Descripción no definida";
+
+// Cargar datos de secciones
+const hero = home?.data.hero ?? {
+  show_section: true,
+  title: "Convertimos estrategias en impacto",
+  cta_text: "Hablemos",
+};
+const nosotros = home?.data.nosotros ?? {
+  show_section: true,
+  title: "## ¿Quiénes Somos?",
+  subtitle: "Nuestra Historia",
+  description: "Descripción principal de la empresa.",
+  mision_title: "Misión",
+  vision_title: "Visión",
+};
+const productos = home?.data.productos ?? {
+  show_section: true,
+  title: "Nuestros Productos",
+};
+const cualidades_marca = home?.data.cualidades_marca ?? {
+  show_section: true,
+  items: [
+    { title: "Cualidad 1", description: "Descripción de la cualidad 1.", image_fondo: "/assets/uploads/placeholder.jpeg" },
+    { title: "Cualidad 2", description: "Descripción de la cualidad 2.", image_fondo: "/assets/uploads/placeholder.jpeg" },
+    { title: "Cualidad 3", description: "Descripción de la cualidad 3.", image_fondo: "/assets/uploads/placeholder.jpeg" },
+  ],
+};
+const proyectos = home?.data.proyectos ?? {
+  show_section: true,
+  title: "Nuestros Proyectos",
+};
+const clientes = home?.data.clientes ?? {
+  show_section: true,
+  title: "Clientes que confían en nosotros",
+  show_scroller: true,
+};
+const testimonios = home?.data.testimonios ?? {
+  show_section: true,
+  title: "Lo que dicen nuestros socios",
+};
+
+// --- Renderizar Markdown a HTML ---
+function render(md: string | undefined, inline = false): string {
+  if (!md) return "";
+  const html = mdToHtml(md);
+  if (inline) {
+    return html
+      .trim()
+      .replace(/^<p>/i, "")
+      .replace(/<\/p>$/i, "");
+  }
+  return html;
+}
+
+// Renderizado de títulos
+const heroTitleHtml = render(hero.title, true);
+const heroSubtitleHtml = render(hero.subtitle, true);
+const heroDescriptionHtml = render(hero.description);
+const heroCtaTextHtml = render(hero.cta_text, true);
+
+const nosotrosTitleHtml = render(nosotros.title, true);
+const nosotrosSubtitleHtml = render(nosotros.subtitle, true);
+const nosotrosContentHtml = render(nosotros.description);
+const nosotrosMisionTextHtml = render(nosotros.mision_text);
+const nosotrosVisionTextHtml = render(nosotros.vision_text);
+
+const productosTitleHtml = render(productos.title, true);
+const productosSubtitleHtml = render(productos.subtitle, true);
+
+const proyectosTitleHtml = render(proyectos.title, true);
+const proyectosSubtitleHtml = render(proyectos.subtitle, true);
+const clientesTitleHtml = render(clientes.title, true);
+const testimoniosTitleHtml = render(testimonios.title, true);
+
+// Lógica Testimonios
+type Testimonio = {
+  quote: string;
+  author?: string;
+  google_review_embed?: string;
+};
+const testimoniosLista: Testimonio[] = home?.data.testimonios?.lista ?? [];
+
+// Lógica Proyectos Destacados
+const titulosProyectosDestacados: string[] =
+  home?.data.proyectos?.lista_destacados ?? [];
+const proyectosParaMostrar =
+  titulosProyectosDestacados.length > 0
+    ? allProyectos.filter((proyecto) =>
+        titulosProyectosDestacados.includes(proyecto.data.titulo),
+      )
+    : allProyectos.slice(0, 6);
+// Fallback: Muestra los primeros 6
+
+// --- LÓGICA DE CLIENTES ---
+const titulosClientesDestacados: string[] =
+  home?.data.clientes?.lista_destacados ?? [];
+const clientesParaGrid =
+  titulosClientesDestacados.length > 0
+    ? allClientes.filter((cliente) =>
+        titulosClientesDestacados.includes(cliente.data.titulo),
+      )
+    : allClientes.slice(0, 12);
+// Fallback: Muestra los primeros 12
+
+const TARGET_FILL_COUNT = 18;
+const clientCount = allClientes.length;
+let scrollerList: CollectionEntry<"clientes">[] = [];
+
+if (clientCount > 0 && clientCount < TARGET_FILL_COUNT) {
+  const repetitions = Math.ceil(TARGET_FILL_COUNT / clientCount);
+  scrollerList = Array(repetitions).fill(allClientes).flat();
+} else {
+  scrollerList = allClientes;
+}
+---
+
+<Layout title={title} description={description}>
+  <main>
+    {
+      hero.show_section && (
+        <section
+          id="inicio"
+          class="relative min-h-screen flex items-center bg-secondary text-text-base pt-24 md:pt-0 prose-color"
+        >
+          {/* IMAGEN DE FONDO (ligera transparencia) */}
+          {hero.image_main && (
+            <div
+              class="absolute inset-0 w-full h-full bg-cover bg-center z-0 opacity-20"
+              style={`background-image: url(${hero.image_main});`}
+            >
+            </div>
+          )}
+          <div class="absolute inset-0 bg-primary/10 z-0"></div>
+
+          <div class="w-full max-w-screen-xl mx-auto px-8 py-20 md:py-32 grid grid-cols-1 md:grid-cols-2 gap-8 items-center relative z-10">
+            
+            <div class="relative z-10 animate-fade-in-up">
+              <h1 class="text-4xl md:text-6xl font-serif font-bold mb-4 text-primary">
+                <span
+                  class="prose prose-invert max-w-none prose-strong:text-accent-secondary prose-unsize text-5xl md:text-6xl text-primary"
+                  set:html={heroTitleHtml}
+                ></span>
+              </h1>
+
+              {hero.subtitle && (
+                <p class="mb-4">
+                  <span
+                    class="prose max-w-none prose-strong:text-accent-secondary prose-unsize text-xl text-primary/80"
+                    set:html={heroSubtitleHtml}
+                  ></span>
+                </p>
+              )}
+
+              {hero.description && (
+                <div
+                  class="prose prose-xl max-w-none prose-strong:text-accent-secondary prose-unsize text-lg text-primary/70"
+                  set:html={heroDescriptionHtml}
+                />
+              )}
+
+              {/* CTA PRINCIPAL (VERDE) */}
+              {hero.cta_text && (
+                <a
+                  href={hero.cta_url ?? "#contacto"}
+                  class="bg-accent text-text-inverted font-bold py-3 px-8 text-lg hover:bg-primary inline-block hover:no-underline mt-6"
+                >
+                  <span
+                    class="prose prose-invert max-w-none prose-strong:text-primary prose-unsize text-lg"
+                    set:html={heroCtaTextHtml}
+                  />
+                </a>
+              )}
+            </div>
+
+            <div class="relative flex items-center justify-center min-h-[400px] lg:pl-16">
+              {hero.image_logo && (
+                <img
+                  src={hero.image_logo}
+                  alt="Logo"
+                  class="relative z-20 w-3/4 md:w-full max-w-sm object-contain shadow-2xl"
+                />
+              )}
+              {!hero.image_logo && !hero.image_main && (
+                <div class="relative z-10 w-full max-w-md h-80 bg-black/10 flex items-center justify-center text-text-base/50">
+                  (Imágenes se mostrarán aquí)
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+      )
+    }
+
+    {/* BLOQUE CUALIDADES DE MARCA (Acordeón V5.7 - Acento Naranja) */}
+    {
+      cualidades_marca.show_section && (
+        <div class="w-full max-w-screen-xl mx-auto px-8 -mt-16 relative z-30">
+          <div
+            id="quality-accordion"
+            class="flex w-full h-auto md:h-56 bg-primary text-text-inverted shadow-2xl overflow-hidden"
+          >
+            {cualidades_marca.items?.map((item, index) => (
+              <div
+                class="quality-panel"
+                data-index={index}
+                style={item.image_fondo ? `background-image: url(${item.image_fondo});` : ''}
+              >
+                <div class="quality-content">
+                  <h3 class="text-lg md:text-xl font-serif font-bold text-accent-secondary">
+                    {item.title}
+                  </h3>
+                  <p class="quality-description">
+                    {item.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )
+    }
+
+    {/* SECCIÓN NOSOTROS (V5.7 - Acento Naranja) */}
+    {
+      nosotros.show_section && (
+        <section id="nosotros" class="py-24 px-8 bg-secondary pt-36">
+          <div class="w-full max-w-screen-xl mx-auto relative z-10">
+            
+            <div class="text-center mb-12">
+              <h2 class="text-5xl font-serif font-bold mb-2 text-primary">
+                <span set:html={nosotrosTitleHtml} />
+              </h2>
+              {nosotros.subtitle && (
+                <h3 class="text-xl text-primary/80 font-sans">
+                  <span set:html={nosotrosSubtitleHtml} />
+                </h3>
+              )}
+            </div>
+
+            {/* Zócalo Gris Claro */}
+            <div class="relative bg-white p-8 pt-16 md:p-12 md:pt-20 rounded-lg shadow-xl border border-gray-200">
+              
+              {/* Descripción Principal (Superpuesta - Acento Naranja) */}
+              <div class="absolute -top-10 left-1/2 transform -translate-x-1/2 w-11/12 md:w-3/4 bg-accent-secondary text-text-inverted p-4 text-center rounded-lg shadow-2xl">
+                <div class="prose prose-invert max-w-none text-base">
+                  <span set:html={nosotrosContentHtml} />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-4">
+                
+                <div class="relative flex items-center justify-center row-span-2 min-h-[300px] bg-secondary rounded-lg shadow-inner overflow-hidden">
+                  {nosotros.image ? (
+                    <img
+                      src={nosotros.image}
+                      alt="Imagen de Nosotros"
+                      class="w-full h-full object-contain p-8"
+                    />
+                  ) : (
+                    <p class="text-primary/50">(Imagen de Nosotros)</p>
+                  )}
+                </div>
+
+                {/* Misión (Borde Naranja) */}
+                <div class="bg-secondary p-6 rounded-lg shadow-md border-l-4 border-accent-secondary">
+                  <h3 class="text-xl font-serif font-bold text-primary mb-2">{nosotros.mision_title || 'Misión'}</h3>
+                  <div class="prose max-w-none text-text-base/80 text-sm">
+                    <span set:html={nosotrosMisionTextHtml} />
+                  </div>
+                </div>
+
+                {/* Visión (Borde Naranja) */}
+                <div class="bg-secondary p-6 rounded-lg shadow-md border-l-4 border-accent-secondary">
+                  <h3 class="text-xl font-serif font-bold text-primary mb-2">{nosotros.vision_title || 'Visión'}</h3>
+                  <div class="prose max-w-none text-text-base/80 text-sm">
+                    <span set:html={nosotrosVisionTextHtml} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      )
+    }
+
+    {/* SECCIÓN PRODUCTOS (V5.7 - Fondo Verde) */}
+    {
+      productos.show_section && (
+        <section id="productos" class="py-20 px-8 bg-accent text-text-inverted">
+          <div class="w-full max-w-screen-2xl mx-auto text-center">
+            <h2 class="mb-4 font-serif">
+              <span
+                class="prose prose-invert max-w-none prose-strong:text-primary prose-unsize text-5xl"
+                set:html={productosTitleHtml}
+              ></span>
+            </h2>
+
+            {productos.subtitle && (
+              <p class="max-w-2xl mx-auto mb-12">
+                <span
+                  class="prose prose-invert max-w-none prose-strong:text-primary prose-unsize text-2xl"
+                  set:html={productosSubtitleHtml}
+                ></span>
+              </p>
+            )}
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
+              {allProductos.map((producto) => (
+                <ProductCard producto={producto} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )
+    }
+
+    {/* SECCIÓN PROYECTOS (V5.7 - Fondo Gris Claro) */}
+    {
+      proyectos.show_section && (
+        <section id="proyectos" class="py-20 px-8 bg-secondary">
+          <div class="w-full max-w-screen-desktop-lg mx-auto text-center">
+            <h2 class="mb-4 text-primary font-serif">
+              <span
+                class="prose max-w-none prose-strong:text-accent-secondary prose-unsize prose-invert text-7xl text-primary"
+                set:html={proyectosTitleHtml}
+              ></span>
+            </h2>
+
+            {proyectos.subtitle && (
+              <p class="max-w-2xl mx-auto mb-12">
+                <span
+                  class="prose max-w-none prose-strong:text-accent-secondary prose-unsize text-2xl"
+                  set:html={proyectosSubtitleHtml}
+                ></span>
+              </p>
+            )}
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-center gap-2 max-w-screen-2xl mx-auto">
+              {proyectosParaMostrar.map((project) => (
+                <ProjectCardV4 project={project} />
+              ))}
+            </div>
+
+            <div class="mt-12">
+              <a
+                href="/proyectos"
+                class="bg-primary text-text-inverted font-bold py-3 px-8 text-lg hover:bg-accent hover:text-primary hover:border-2 inline-block hover:no-underline"
+              >
+                Ver Todos los Proyectos
+              </a>
+            </div>
+          </div>
+        </section>
+      )
+    }
+
+    {/* SECCIÓN CLIENTES (V5.7 - Fondo Verde y Azul Pizarra) */}
+    {
+      clientes.show_section && (
+        <section id="clientes" class="pt-20">
+          <div class="bg-accent text-text-inverted py-16 text-center">
+            <h2 class="font-bold font-serif">
+              <span
+                class="prose prose-invert max-w-none prose-strong:text-primary prose-unsize prose-invert text-7xl"
+                set:html={clientesTitleHtml}
+              ></span>
+            </h2>
+          </div>
+
+          <div class="bg-primary py-20">
+            <div class="w-full max-w-screen-2xl mx-auto px-8">
+              {/* Clientes Grid */}
+              <div class="flex flex-wrap justify-center gap-x-4 gap-y-4 max-w-7xl mx-auto">
+                {clientesParaGrid.map((cliente) =>
+                  cliente.data.url ? (
+                    <a
+                      href={cliente.data.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="block text-center opacity-70 transition-opacity duration-300 hover:opacity-100"
+                      title={cliente.data.titulo}
+                    >
+                      <img
+                        src={cliente.data.logo}
+                        alt={cliente.data.titulo}
+                        class="h-72 w-auto object-contain mx-auto"
+                      />
+                    </a>
+                  ) : (
+                    <div
+                      class="text-center opacity-70"
+                      title={cliente.data.titulo}
+                    >
+                      <img
+                        src={cliente.data.logo}
+                        alt={cliente.data.titulo}
+                        class="h-72  w-auto object-contain mx-auto"
+                      />
+                    </div>
+                  ),
+                )}
+              </div>
+              {clientesParaGrid.length === 0 && (
+                <p class="text-text-inverted/50 text-center mt-8">
+                  Logos de clientes destacados se mostrarán aquí.
+                </p>
+              )}
+            </div>
+          </div>
+
+          {clientes.show_scroller && scrollerList.length > 0 && (
+            <div class="bg-secondary py-12 marquee-viewport">
+              <div class="marquee-track">
+                <div class="marquee-list">
+                  {scrollerList.map((cliente) => (
+                    <img
+                      src={cliente.data.logo}
+                      alt={cliente.data.titulo}
+                      title={cliente.data.titulo}
+                      class="h-32 w-auto object-contain"
+                    />
+                  ))}
+                </div>
+
+                <div class="marquee-list" aria-hidden="true">
+                  {scrollerList.map((cliente) => (
+                    <img
+                      src={cliente.data.logo}
+                      alt={cliente.data.titulo}
+                      title={cliente.data.titulo}
+                      class="h-32 w-auto object-contain"
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+        </section>
+      )
+    }
+
+    {/* SECCIÓN TESTIMONIOS (V5.7 - Borde Naranja) */}
+    {
+      testimonios.show_section && (
+        <section id="testimonios" class="bg-secondary py-20 px-8 text-primary">
+          <div class="w-full max-w-screen-2xl mx-auto text-center">
+            <h2 class="mb-12 font-serif">
+              <span
+                class="prose max-w-none prose-strong:text-accent-secondary prose-unsize text-5xl"
+                set:html={testimoniosTitleHtml}
+              ></span>
+            </h2>
+
+            {testimoniosLista.length > 0 ? (
+              <div class="relative max-w-4xl mx-auto">
+                <div class="overflow-hidden" id="clientes-viewport">
+                  <div
+                    class="flex transition-transform duration-700 ease-in-out"
+                    id="clientes-track"
+                    style="transform: translateX(0%);"
+                  >
+                    {testimoniosLista.map((cliente: Testimonio) => (
+                      <div class="min-w-full p-6 flex-shrink-0 flex items-center justify-center">
+                        <div class="w-full max-w-3xl bg-white p-8 shadow-md text-left clientes-card border-l-4 border-accent-secondary">
+                          {cliente.google_review_embed ? (
+                            <div set:html={cliente.google_review_embed} />
+                          ) : (
+                            <>
+                              <p class="text-lg md:text-xl italic mb-4 quote whitespace-normal break-words text-text-base">
+                                <span set:html={mdToHtml(cliente.quote)} />
+                              </p>
+                              <p class="font-bold text-right mt-4 author text-primary">
+                                - {cliente.author}
+                              </p>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <button
+                  aria-label="Anterior"
+                  id="clientes-prev"
+                  class="absolute left-2 top-1/2 -translate-y-1/2 bg-primary/20 hover:bg-primary/40 text-primary rounded-full w-10 h-10 flex items-center justify-center"
+                >
+                  ‹
+                </button>
+                <button
+                  aria-label="Siguiente"
+                  id="clientes-next"
+                  class="absolute right-2 top-1/2 -translate-y-1/2 bg-primary/20 hover:bg-primary/40 text-primary rounded-full w-10 h-10 flex items-center justify-center"
+                >
+                  ›
+                </button>
+                <div
+                  id="clientes-dots"
+                  class="flex justify-center gap-3 mt-6"
+                />
+              </div>
+            ) : (
+              <p class="text-text-base/70">
+                (Los testimonios de los clientes se mostrarán aquí cuando se
+                carguen en el CMS)
+              </p>
+            )}
+          </div>
+        </section>
+      )
+    }
+  </main>
+</Layout>
+
+<style>
+  /* Animación fade-in-up */
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .animate-fade-in-up {
+    animation: fade-in-up 1s ease-out forwards;
+  }
+
+  /* Estilos del Carrusel (Testimonios) - CORREGIDO V5.7 */
+  #clientes-dots button {
+    width: 10px;
+    height: 10px;
+    border-radius: 9999px;
+    background: #2C3E5066; /* theme("colors.primary / 0.4") */
+    border: none;
+  }
+  #clientes-dots button.active {
+    background: #2C3E50; /* theme("colors.primary") */
+  }
+
+  .clientes-card {
+    min-height: 160px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .clientes-card .quote {
+    line-height: 1.5;
+    max-height: 28vh;
+    overflow: auto;
+  }
+  .clientes-card .author {
+    margin-top: 1rem;
+  }
+  .clientes-card,
+  .clientes-card .quote {
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+
+  @media (min-width: 768px) {
+    .clientes-card {
+      min-height: 200px;
+    }
+  }
+
+  /* --- Estilos del Scroller Infinito (Marquesina) - Sin cambios --- */
+  @keyframes marquee-scroll {
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  .marquee-viewport {
+    overflow: hidden;
+    width: 100%;
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 10%,
+      black 90%,
+      transparent 100%
+    );
+  }
+
+  .marquee-track {
+    display: flex;
+    width: fit-content;
+    animation: marquee-scroll 60s linear infinite;
+  }
+
+  .marquee-track:hover {
+    animation-play-state: paused;
+  }
+
+  .marquee-list {
+    display: flex;
+    align-items: center;
+    gap: 4rem; 
+    padding: 0 2rem;
+    flex-shrink: 0;
+  }
+  .marquee-list img {
+    flex-shrink: 0;
+  }
+
+  /* --- INICIO: CAMBIO 5.7 - ESTILOS ACORDEÓN CUALIDADES (CORREGIDOS) --- */
+  .quality-panel {
+    /* Transiciones */
+    transition:
+      flex-grow 0.7s cubic-bezier(0.4, 0, 0.2, 1),
+      background-color 0.5s ease;
+    
+    /* Layout Flex */
+    flex-grow: 1; /* Todos contraídos por igual */
+    
+    /* Estilo Base (Contraído) */
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    background-color: #2C3E50; /* theme('colors.primary / 1') */
+    background-size: cover;
+    background-position: center;
+    background-blend-mode: multiply; /* Oscurece la imagen de fondo */
+  }
+
+  .quality-panel.active {
+    flex-grow: 4; /* El panel activo se expande (ratio 4:1) */
+    background-color: #2C3E5099; /* theme('colors.primary / 0.6') 60% opacity */
+  }
+
+  /* Contenido (Siempre horizontal) */
+  .quality-content {
+    /* Layout */
+    position: relative; 
+    padding: 1.5rem;
+    
+    /* Estilo */
+    opacity: 1; /* Siempre visible */
+    white-space: normal; /* El texto se ajusta */
+  }
+
+  /* Descripción (Párrafo) */
+  .quality-description {
+    /* Transiciones */
+    transition: opacity 0.5s ease-in-out 0.2s, max-height 0.5s ease-in-out 0.2s;
+
+    /* Estilo Base (Contraído) */
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    
+    /* Estilo de Texto (CSS Estándar) */
+    margin-top: 0.5rem;
+    color: rgb(255 255 255 / 0.9); /* text-white/90 */
+    font-size: 0.875rem; /* text-sm */
+    line-height: 1.25rem;
+  }
+  
+  .quality-panel.active .quality-description {
+    opacity: 1; /* Mostrar descripción solo en el panel activo */
+    max-height: 100px; /* Espacio para que el texto aparezca */
+  }
+
+  /* Media query para md:text-base */
+  @media (min-width: 768px) {
+    .quality-description {
+      font-size: 1rem; /* text-base */
+      line-height: 1.5rem;
+    }
+  }
+  /* --- FIN: CAMBIO 5.7 --- */
+</style>
+
+<script>
+  // Script del carrusel de testimonios (V4.1 CON TIPOS)
+  document.addEventListener("DOMContentLoaded", () => {
+    
+    // --- INICIO: Script Carrusel Testimonios ---
+    (function () {
+      const track = document.getElementById("clientes-track");
+      const prev = document.getElementById("clientes-prev");
+      const next = document.getElementById("clientes-next");
+      const dotsContainer = document.getElementById("clientes-dots");
+      const viewport = document.getElementById("clientes-viewport");
+
+      if (!track || !dotsContainer) return;
+      const slides = Array.from(track.children);
+      const total = slides.length;
+      if (total === 0) return; // Si no hay slides, no hacer nada
+
+      let index: number = 0;
+      let timer: number | null = null;
+      const interval = 10000;
+
+      function goTo(i: number) {
+        index = (i + total) % total;
+        if (track)
+          (track as HTMLElement).style.transform =
+            `translateX(-${index * 100}%)`;
+        
+        if (dotsContainer)
+          Array.from(dotsContainer.children).forEach((b, idx) =>
+            (b as HTMLElement).classList.toggle("active", idx === index),
+          );
+      }
+
+      function nextSlide() {
+        goTo(index + 1);
+      }
+      function prevSlide() {
+        goTo(index - 1);
+      }
+
+      for (let i = 0; i < total; i++) {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.addEventListener("click", () => {
+          goTo(i);
+          resetTimer();
+        });
+        dotsContainer.appendChild(b);
+      }
+
+      if (next)
+        next.addEventListener("click", () => {
+          nextSlide();
+          resetTimer();
+        });
+      if (prev)
+        prev.addEventListener("click", () => {
+          prevSlide();
+          resetTimer();
+        });
+      function startTimer() {
+        if (timer) clearInterval(timer as number);
+        timer = window.setInterval(() => {
+          nextSlide();
+        }, interval);
+      }
+      function stopTimer() {
+        if (timer) {
+          clearInterval(timer as number);
+          timer = null;
+        }
+      }
+      function resetTimer() {
+        stopTimer();
+        startTimer();
+      }
+
+      [viewport, track, prev, next, dotsContainer].forEach((el) => {
+        if (!el) return;
+        el.addEventListener("mouseenter", () => {
+          stopTimer();
+        });
+        el.addEventListener("mouseleave", () => {
+          startTimer();
+        });
+        el.addEventListener("focusin", () => {
+          stopTimer();
+        });
+        el.addEventListener("focusout", () => {
+          startTimer();
+        });
+      });
+      goTo(0);
+      startTimer();
+    })();
+    // --- FIN: Script Carrusel Testimonios ---
+
+
+    // --- INICIO: Script Acordeón Cualidades (Sin cambios en JS) ---
+    (function () {
+      const accordion = document.getElementById("quality-accordion");
+      if (!accordion) return;
+
+      const panels = accordion.querySelectorAll(".quality-panel");
+      if (panels.length === 0) return;
+
+      const interval = 5000; // 5 segundos
+      let currentIndex = 0;
+      let timer: number | null = null;
+
+      function activatePanel(index: number) {
+        panels.forEach((panel, i) => {
+          if (i === index) {
+            panel.classList.add("active");
+          } else {
+            panel.classList.remove("active");
+          }
+        });
+      }
+
+      function nextPanel() {
+        currentIndex = (currentIndex + 1) % panels.length;
+        activatePanel(currentIndex);
+      }
+
+      function startTimer() {
+        if (timer) clearInterval(timer as number);
+        timer = window.setInterval(nextPanel, interval);
+      }
+
+      function stopTimer() {
+        if (timer) {
+          clearInterval(timer as number);
+          timer = null;
+        }
+      }
+
+      // Interacción del usuario (Hover/Focus)
+      panels.forEach((panel, index) => {
+        const resetAndActivate = () => {
+          stopTimer(); 
+          currentIndex = index; 
+          activatePanel(index); 
+        };
+        
+        panel.addEventListener("mouseenter", resetAndActivate);
+        panel.addEventListener("focus", resetAndActivate);
+      });
+
+      // Reiniciar el ciclo cuando el mouse sale del contenedor
+      accordion.addEventListener("mouseleave", () => {
+          startTimer();
+      });
+
+      // Iniciar
+      activatePanel(0);
+      startTimer();
+
+    })();
+    // --- FIN: NUEVO Script Acordeón Cualidades ---
+
+  });
+</script>

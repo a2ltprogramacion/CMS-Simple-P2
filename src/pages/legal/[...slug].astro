@@ -1,0 +1,56 @@
+---
+// @src/pages/legal/[...slug].astro (VERSIÓN 6.4 - FIX TypeError 'render' + Prerender)
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import type { CollectionEntry } from 'astro:content';
+
+// Asegura que Astro genere estas páginas en el build
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const legalPages = await getCollection('legal');
+  
+  return legalPages.map(page => ({
+    params: { slug: page.slug },
+    props: page, // Pasamos la 'page' directamente.
+  }));
+}
+
+// Astro.props AHORA ES el objeto 'page' completo.
+const page = Astro.props;
+const { Content } = await page.render();
+---
+<Layout title={page.data.title} description={`Documento legal: ${page.data.title}`}>
+  
+  {/* Header simple para el documento */}
+  <header 
+    id="header-legal" 
+    class="relative h-56 flex items-center justify-center text-center text-text-inverted"
+  >
+    <div class="absolute top-0 left-0 w-full h-full bg-primary opacity-90"></div>
+  
+    <div class="relative z-10 px-8 animate-fade-in-up">
+      <h1 class="text-4xl md:text-5xl font-serif font-bold text-white pt-20">
+        {page.data.title}
+      </h1>
+    </div>
+  </header>
+
+  {/* Contenido del Documento Legal */}
+  <section class="py-20 px-8 bg-secondary">
+    <div class="container mx-auto max-w-4xl">
+      
+      {/* Estilo "Documento Legal" */}
+      <article 
+        class="prose prose-lg max-w-none 
+               font-sans text-text-base 
+               prose-headings:font-serif prose-headings:text-primary
+               prose-strong:text-primary
+               prose-a:text-accent-secondary"
+      >
+        <Content />
+      </article>
+
+    </div>
+  </section>
+</Layout>

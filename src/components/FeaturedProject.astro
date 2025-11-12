@@ -1,0 +1,57 @@
+---
+// @src/components/FeaturedProject.astro (VERSIÓN 5.7 - Nuevo Componente)
+import type { CollectionEntry } from 'astro:content';
+import { mdToHtml } from '../utils/markdown';
+
+export interface Props {
+  project: CollectionEntry<'proyectos'>;
+}
+const { project } = Astro.props;
+
+// Datos del proyecto
+const clientName = project.data.client_name;
+const titulo = project.data.titulo;
+const summary = project.data.summary;
+const image = project.data.image ?? '/assets/uploads/placeholder.jpeg';
+
+// Renderizar HTML si hay resumen
+const summaryHtml = summary ? mdToHtml(summary) : null;
+---
+
+<article class="grid grid-cols-1 lg:grid-cols-2 gap-0 w-full bg-white shadow-xl rounded-lg overflow-hidden border border-gray-200">
+  
+  <div class="relative min-h-[300px] lg:min-h-0">
+    <img 
+      src={image} 
+      alt={`Imagen del proyecto ${titulo}`} 
+      class="absolute inset-0 w-full h-full object-cover" 
+    />
+  </div>
+
+  <div class="flex flex-col justify-center p-8 md:p-12 lg:p-16">
+    
+    <span class="font-sans text-sm font-bold text-accent-secondary uppercase tracking-wider mb-2">
+      {clientName}
+    </span>
+    
+    <h2 class="font-serif text-3xl md:text-4xl font-bold text-primary mb-4 leading-tight">
+      {titulo}
+    </h2>
+    
+    {summaryHtml && (
+      <div class="prose max-w-none text-text-base/80 mb-6">
+        <span set:html={summaryHtml} />
+      </div>
+    )}
+    
+    <div class="mt-auto">
+      <a 
+        href={`/proyectos/${project.slug}`} 
+        class="bg-primary text-text-inverted font-bold py-3 px-6 text-base transition-colors duration-300 hover:bg-accent inline-block"
+      >
+        Leer Más
+      </a>
+    </div>
+  </div>
+
+</article>

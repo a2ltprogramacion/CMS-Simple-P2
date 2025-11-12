@@ -1,0 +1,163 @@
+---
+// @src/components/Header.astro (VERSIÓN 5.0 - Menú Desktop Visible + Scroll Opacity)
+import { getEntry } from 'astro:content';
+
+const contacto = await getEntry('informacion-de-contacto', 'general');
+const c = contacto?.data ?? {};
+const waNumber = c.whatsapp ?? '';
+const waMsg = encodeURIComponent(c.whatsapp_message ?? 'Hola, quiero cotizar un proyecto'); 
+const waHref = waNumber ?
+`https://wa.me/${waNumber}?text=${waMsg}` : null; 
+
+const navLinks = [
+  { href: "/#inicio", text: "Inicio" },
+  { href: "/#nosotros", text: "Nosotros" },
+  { href: "/proyectos", text: "Proyectos" },
+  { href: "/#productos", text: "Productos" }, // Actualizado de Servicios a Productos
+  { href: "/#clientes", text: "Clientes" },
+];
+---
+
+{/* Header V5.0 (Fixed + Scroll Opacity) */}
+<header id="main-header" class="fixed top-0 left-0 right-0 w-full z-50 
+            transition-all duration-300 ease-in-out bg-primary/0" 
+            data-scroll-header> 
+  <div class="container lg:w-[95%] 2xl:w-[80%] mx-auto flex justify-between items-center p-0 md:p-4">
+    <a href="/" class="ml-5 sm:ml-0 no-underline hover:no-underline mt-5">
+      <img class="max-h-24 md:max-h-32" src="/assets/uploads/Logo-transparente-text.png" alt="Logo Elevawod" />
+    </a>
+
+    
+    {/* Navegación de escritorio VISIBLE EN LG+ (lg:flex) */}
+    <nav class="hidden lg:flex items-center space-x-6 mr-5 md:mr-32"> 
+      {navLinks.map(link => 
+        <a
+          href={link.href}
+          class="text-white font-bold font-sans duration-200 relative submenu-link inline-block transform transition-transform ease-in-out hover:scale-[1.1] no-underline hover:no-underline"
+        > 
+          {link.text}
+        </a>
+      )}
+      {waHref && (
+        <a href={waHref} target="_blank" rel="noopener noreferrer" class="bg-accent text-primary font-bold py-2 px-4 transition-all duration-300 ease-in-out hover:bg-white hover:text-accent border-2 border-accent no-underline hover:no-underline">Contacto</a>
+      )}
+    </nav>
+
+  
+    {/* Botón de hamburguesa OCULTO EN LG+ (lg:hidden) */}
+    <button id="mobile-menu-button" class="block lg:hidden text-white z-60 mr-5 sm:mr-0"> 
+      <svg class="w-11 h-11" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+    </button>
+  </div>
+
+  {/* CORREGIDO V4.4: Menú lateral estrecho que se desliza desde la derecha (Sin cambios) */}
+  <div id="mobile-menu" class="fixed top-0 right-0 w-72 bg-primary/95 backdrop-blur-sm flex flex-col items-start justify-start py-8 px-6 transform translate-x-full transition-transform duration-300 ease-in-out overflow-y-auto z-80">
+    <div class="flex justify-between items-center w-full mb-8">
+      <h3 class="text-white text-xl font-bold">Menú</h3> 
+      <button id="close-mobile-menu" class="text-white">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+      </button>
+    </div>
+    {navLinks.map(link => 
+      <a href={link.href} class="text-white text-lg font-sans mobile-link w-full py-2 border-b border-white/10">{link.text}</a>
+    )}
+    {waHref && (
+      <a href={waHref} target="_blank" rel="noopener noreferrer" class="bg-accent text-primary font-bold py-3 px-6 text-lg mt-8 w-full text-center">Contacto</a>
+    )}
+</header>
+
+<style>
+/* Estilos para el efecto de subrayado (si se usara en desktop) */
+.submenu-link {
+  position: relative;
+  color: white !important;
+} 
+.submenu-link::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: theme('colors.accent');
+  transform: scaleX(0);
+  transform-origin: bottom left; 
+  transition: transform 0.3s ease-out;
+}
+.submenu-link:hover::after {
+  transform: scaleX(1);
+} 
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    
+    // --- INICIO: Script Menú Móvil (CÓDIGO ORIGINAL FUSIONADO) ---
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const closeMobileMenuButton = document.getElementById('close-mobile-menu');
+
+    if (mobileMenuButton && mobileMenu) {
+      const mobileLinks = mobileMenu.querySelectorAll('.mobile-link');
+
+      // Toggle mobile menu
+      mobileMenuButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        mobileMenu.classList.remove('translate-x-full');
+      });
+
+      // Close mobile menu when a link is clicked or close button is clicked
+      mobileLinks.forEach(link => { 
+        link.addEventListener('click', () => {
+          mobileMenu.classList.add('translate-x-full');
+        });
+      });
+
+      if (closeMobileMenuButton) {
+        closeMobileMenuButton.addEventListener('click', () => {
+          mobileMenu.classList.add('translate-x-full'); 
+        });
+      }
+
+      // Close mobile menu when clicking outside
+      document.addEventListener('click', (e) => {
+        const target = e.target;
+        if (
+          mobileMenu &&
+          target instanceof Node &&
+          !mobileMenu.contains(target) && 
+          (!mobileMenuButton || !mobileMenuButton.contains(target))
+        ) {
+          mobileMenu.classList.add('translate-x-full');
+        }
+      }); 
+    }
+    // --- FIN: Script Menú Móvil ---
+
+
+    // --- INICIO: NUEVO Script de Scroll Header (Opacidad) ---
+    const header = document.getElementById('main-header');
+    const scrollThreshold = 100; // Pixeles para activar el cambio
+
+    if (header) {
+        const handleScroll = () => {
+            if (window.scrollY > scrollThreshold) {
+                // Opacidad completa cuando se baja
+                header.classList.remove('bg-primary/0');
+                header.classList.add('bg-primary/95', 'shadow-md');
+            } else {
+                // Opacidad al inicio de la página
+                header.classList.remove('bg-primary/95', 'shadow-md');
+                header.classList.add('bg-primary/0');
+            }
+        };
+        
+        window.addEventListener('scroll', handleScroll);
+        
+        // Aplicar la clase inicial si el usuario carga la página más allá del top
+        handleScroll();
+    }
+    // --- FIN: NUEVO Script de Scroll Header ---
+
+  });
+</script>
