@@ -1,4 +1,4 @@
-// @tailwind.config.mjs (VERSIÓN 5.1 - Paleta y Fuentes Finales)
+// @tailwind.config.mjs (VERSIÓN 7.0 - Laboratorio de Innovación)
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
@@ -14,31 +14,35 @@ export default {
     },
     extend: {
       colors: {
-        // --- Paleta V5.1 (Confianza, Modernidad y Elegancia) ---
+        // --- Paleta V7.0 (Futurista / Neón) ---
         
-        // Azul Pizarra Oscuro: Base de la marca. Genera confianza y seriedad.
-        'primary': '#2C3E50', 
+        // Fondo Principal (Casi Negro)
+        'primary': '#0D0D1F', 
         
-        // Verde Menta/Sage (MUTED): CTA Principal. Profesional, apagado y seguro.
-        'accent': '#49A078',
+        // Fondo Secundario (Azul Oscuro para tarjetas base)
+        'secondary': '#1A1A2E', 
         
-        // Naranja/Ámbar: Destaques secundarios (quotes, acordeón de cualidades, banners).
-        'accent-secondary': '#E67E22',
+        // Acento Principal (CTA, Enlaces)
+        'accent': '#00BFFF', // Azul Eléctrico
+        
+        // Acento Secundario (Destaques, Bordes)
+        'accent-secondary': '#D900FF', // Magenta Neón
 
-        // Gris Claro: Fondo principal. Modernidad y reduce la fatiga visual.
-        'secondary': '#ECF0F1', 
+        // Texto Principal (Sobre fondos oscuros)
+        'text-base': '#E0E0E0', // Gris Claro
         
-        // Blanco: Para texto sobre fondos oscuros o de acento.
-        'text-inverted': '#FFFFFF',
-        
-        // Texto Principal: (Alias de 'primary' para claridad semántica).
-        'text-base': '#2C3E50',
+        // Texto Invertido (Sobre fondos claros/neón)
+        'text-inverted': '#0D0D1F', // Casi Negro
       },
       fontFamily: {
-        // 'sans' se usará para párrafos y contenido (Lato)
+        // 'sans' para párrafos (Claro, legible)
         'sans': ['Lato', 'sans-serif'],
-        // 'serif' se usará para TÍTULOS (Poppins)
-        'serif': ['Poppins', 'sans-serif'],
+        // 'serif' para TÍTULOS (Tech, geométrica)
+        'serif': ['Space Grotesk', 'sans-serif'],
+      },
+      // Habilitamos backdrop-blur para el efecto Glassmorphism
+      backdropBlur: {
+        'xs': '2px',
       },
     },
   },

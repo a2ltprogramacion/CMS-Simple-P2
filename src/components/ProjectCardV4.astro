@@ -1,97 +1,64 @@
 ---
-// @src/components/ProjectCardV4.astro (VERSIÓN 4.11 - ANIMACIÓN CORREGIDA)
+// @src/components/ProjectCardV4.astro (VERSIÓN 7.1 - CTA Dinámico)
+// Esta es la tarjeta "pequeña" para la rejilla de "Lo Último"
 import type { CollectionEntry } from 'astro:content';
 import { mdToHtml } from '../utils/markdown';
+import { getEntry } from 'astro:content'; // NUEVO
 
 export interface Props {
   project: CollectionEntry<'proyectos'>;
 }
 const { project } = Astro.props;
 
-// Texto de placeholder
-const clientName = project.data.client_name ?? "Cliente de Ejemplo";
-const titulo = project.data.titulo ?? "Proyecto de Ejemplo";
+// NUEVO: Cargar textos de CTA
+const ajustes = await getEntry("ajustes", "home");
+const ctaTextos = ajustes?.data.cta_textos ?? {};
+const ctaText = ctaTextos.ver_proyecto ?? "Ver Caso de Estudio &rarr;";
+
+// Cargar datos (del schema de Proyectos)
+const clientName = project.data.client_name;
+const titulo = project.data.titulo;
 const summary = project.data.summary;
 const image = project.data.image ?? '/assets/uploads/placeholder.jpeg';
+
+const renderedSummaryHtml = mdToHtml(summary ?? "");
 ---
 
 <a 
   href={`/proyectos/${project.slug}`} 
-  class="group relative block overflow-hidden shadow-lg h-80 w-full"
->
-  {/* 1. Imagen de Fondo */}
+  class="
+    group relative flex flex-col h-96 w-full 
+    rounded-lg overflow-hidden cursor-pointer
+    bg-secondary/70 backdrop-blur-md 
+    border border-white/10
+    transition-all duration-300
+    hover:border-accent-secondary hover:shadow-2xl hover:shadow-accent-secondary/10
+    no-underline hover:no-underline
+">
   <img 
     src={image} 
-    alt={`Imagen del proyecto ${titulo}`} 
-    class="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-110" 
+    alt={titulo} 
+    class="w-full h-40 object-cover"
   />
   
-  {/* 2. Overlay oscuro */}
-  <div class="absolute inset-0 bg-black/50 transition-opacity duration-300 group-hover:bg-black/60"></div>
+  <div class="flex flex-col flex-grow p-6">
+    <span class="font-sans text-xs font-bold text-accent-secondary uppercase tracking-wider mb-2">
+      {clientName}
+    </span>
+ 
+    <h3 class="text-xl font-serif font-bold mb-2 text-white">
+        {titulo}
+    </h3>
+    
+    {summary && (
+      <div class="prose max-w-none text-text-base/80 prose-strong:text-accent text-sm">
+        <span set:html={renderedSummaryHtml} />
+      </div>
+    )}
 
-  {/* 3. Contenedor de Contenido (Wrapper)
-      - Alineado abajo a la izquierda
-      - 'overflow-hidden' es crucial para la animación
-  */}
-  <div class="absolute bottom-0 left-0 w-full overflow-hidden text-left">
-
-    {/* Contenedor Deslizante (Estado Hover)
-        - Contiene TÍTULO + DESCRIPCIÓN
-        - Estado Reposo: Abajo (translate-y-full)
-        - Estado Hover: Arriba (translate-y-0)
-        - Al salir del hover: baja inmediatamente
-    */}
-    <div class="
-      p-4 w-full
-      transition-transform ease-out 
-      duration-0 group-hover:duration-700
-      transform translate-y-full
-      group-hover:translate-y-0
-    ">
-      
-      {/* Título (Cliente + Proyecto) */}
-      <h3 class="text-lg font-bold text-text-inverted inline-block">
-        <span class="bg-accent px-2 py-1 leading-tight">
-          {clientName}
-        </span>
-        <br>
-        <span class="bg-accent px-2 py-1 leading-tight mt-1 inline-block">
-          {titulo}
-        </span>
-      </h3>
-
-      {/* Descripción (Summary) */}
-      {summary && (
-        <div class="mt-2 bg-primary/80 p-2 inline-block">
-          <div class="text-sm text-text-inverted">
-            <span set:html={mdToHtml(summary)} />
-          </div>
-        </div>
-      )}
-    </div>
-
-    {/* Contenedor Fijo (Estado Reposo)
-        - Contiene SÓLO TÍTULO
-        - Estado Reposo: Visible (opacity-100)
-        - Estado Hover: Oculto (opacity-0)
-    */}
-    <div class="
-      absolute bottom-0 left-0
-      p-4 w-full 
-      transition-opacity duration-0 ease-out
-      opacity-100
-      group-hover:opacity-0 
-    ">
-      <h3 class="text-lg font-bold text-text-inverted inline-block">
-        <span class="bg-accent px-2 py-1 leading-tight">
-          {clientName}
-        </span>
-        <br>
-        <span class="bg-accent px-2 py-1 leading-tight mt-1 inline-block">
-          {titulo}
-        </span>
-      </h3>
-    </div>
-
+    <p class="mt-auto pt-4 text-sm text-accent-secondary hover:text-white font-bold group-hover:underline">
+      {/* CORREGIDO (Req #2): Texto de CTA dinámico */}
+      {ctaText}
+    </p>
   </div>
 </a>

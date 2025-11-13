@@ -1,34 +1,62 @@
 ---
-// @src/components/Header.astro (VERSIÓN 5.0 - Menú Desktop Visible + Scroll Opacity)
+// @src/components/Header.astro (VERSIÓN 5.2 - Corrección Tipado TS-7053)
 import { getEntry } from 'astro:content';
 
+// --- Carga de datos del CMS ---
 const contacto = await getEntry('informacion-de-contacto', 'general');
+const ajustes = await getEntry('ajustes', 'home');
+const home = await getEntry('pages', 'home');
+
 const c = contacto?.data ?? {};
+const brandName = ajustes?.data.brand_name ?? 'Logo';
+const homeData = home?.data ?? {};
+
+// --- Lógica de WhatsApp (Sin cambios) ---
 const waNumber = c.whatsapp ?? '';
 const waMsg = encodeURIComponent(c.whatsapp_message ?? 'Hola, quiero cotizar un proyecto'); 
 const waHref = waNumber ?
-`https://wa.me/${waNumber}?text=${waMsg}` : null; 
+`https://wa.me/${waNumber}?text=${waMsg}` : null;
 
-const navLinks = [
-  { href: "/#inicio", text: "Inicio" },
-  { href: "/#nosotros", text: "Nosotros" },
-  { href: "/proyectos", text: "Proyectos" },
-  { href: "/#productos", text: "Productos" }, // Actualizado de Servicios a Productos
-  { href: "/#clientes", text: "Clientes" },
+// --- LÓGICA MEJORADA: Enlaces base y filtrado dinámico ---
+const allLinks = [
+  { href: "/#inicio", text: "Inicio", key: "hero" }, // 'inicio' usa la key 'hero'
+  { href: "/#nosotros-productos", text: "Nosotros", key: "nosotros" }, // ACTUALIZADO: Apunta a la nueva sección fusionada
+  { href: "/proyectos", text: "Proyectos", key: "proyectos_page" }, // 'proyectos' es una página, no una sección del home
+  { href: "/#lo-ultimo", text: "Proyectos", key: "proyectos" }, // ACTUALIZADO: Apunta a la sección Proyectos del Home
+  { href: "/#clientes", text: "Clientes", key: "clientes" },
 ];
+
+const navLinks = allLinks.filter(link => {
+  // Si no es un ancla del home (ej. /proyectos), siempre mostrar
+  if (!link.href.startsWith('/#')) {
+    return true;
+  }
+
+  // Si es un ancla del home (ej. 'nosotros')
+  // CORRECCIÓN V8.2: Forzar 'any' para la indexación dinámica de claves.
+  const sectionConfig = (homeData as any)[link.key];
+
+  // Si la sección no existe en el CMS, o no tiene 'show_section', mostrar por defecto
+  if (!sectionConfig || typeof sectionConfig.show_section !== 'boolean') {
+    return true; 
+  }
+  
+  // Ocultar solo si show_section es explícitamente 'false'
+  return sectionConfig.show_section;
+});
 ---
 
-{/* Header V5.0 (Fixed + Scroll Opacity) */}
+{/* Header V5.2 (Fixed + Scroll Opacity) */}
 <header id="main-header" class="fixed top-0 left-0 right-0 w-full z-50 
             transition-all duration-300 ease-in-out bg-primary/0" 
             data-scroll-header> 
   <div class="container lg:w-[95%] 2xl:w-[80%] mx-auto flex justify-between items-center p-0 md:p-4">
     <a href="/" class="ml-5 sm:ml-0 no-underline hover:no-underline mt-5">
-      <img class="max-h-24 md:max-h-32" src="/assets/uploads/Logo-transparente-text.png" alt="Logo Elevawod" />
+      <img class="max-h-24 md:max-h-32" src="/assets/uploads/Logo-transparente-text.png" alt={brandName} />
     </a>
 
     
-    {/* Navegación de escritorio VISIBLE EN LG+ (lg:flex) */}
+    {/* Navegación de escritorio (Filtrada dinámicamente) */}
     <nav class="hidden lg:flex items-center space-x-6 mr-5 md:mr-32"> 
       {navLinks.map(link => 
         <a
@@ -43,14 +71,13 @@ const navLinks = [
       )}
     </nav>
 
-  
     {/* Botón de hamburguesa OCULTO EN LG+ (lg:hidden) */}
     <button id="mobile-menu-button" class="block lg:hidden text-white z-60 mr-5 sm:mr-0"> 
       <svg class="w-11 h-11" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
     </button>
   </div>
 
-  {/* CORREGIDO V4.4: Menú lateral estrecho que se desliza desde la derecha (Sin cambios) */}
+  {/* Menú lateral (Filtrado dinámicamente) */}
   <div id="mobile-menu" class="fixed top-0 right-0 w-72 bg-primary/95 backdrop-blur-sm flex flex-col items-start justify-start py-8 px-6 transform translate-x-full transition-transform duration-300 ease-in-out overflow-y-auto z-80">
     <div class="flex justify-between items-center w-full mb-8">
       <h3 class="text-white text-xl font-bold">Menú</h3> 
@@ -67,7 +94,7 @@ const navLinks = [
 </header>
 
 <style>
-/* Estilos para el efecto de subrayado (si se usara en desktop) */
+/* Estilos sin cambios */
 .submenu-link {
   position: relative;
   color: white !important;
@@ -90,6 +117,7 @@ const navLinks = [
 </style>
 
 <script>
+  // Script JS (sin cambios)
   document.addEventListener('DOMContentLoaded', () => {
     
     // --- INICIO: Script Menú Móvil (CÓDIGO ORIGINAL FUSIONADO) ---
@@ -115,7 +143,7 @@ const navLinks = [
 
       if (closeMobileMenuButton) {
         closeMobileMenuButton.addEventListener('click', () => {
-          mobileMenu.classList.add('translate-x-full'); 
+          mobileMenu.classList.add('translate-x-full');
         });
       }
 
@@ -130,7 +158,7 @@ const navLinks = [
         ) {
           mobileMenu.classList.add('translate-x-full');
         }
-      }); 
+      });
     }
     // --- FIN: Script Menú Móvil ---
 
@@ -153,7 +181,6 @@ const navLinks = [
         };
         
         window.addEventListener('scroll', handleScroll);
-        
         // Aplicar la clase inicial si el usuario carga la página más allá del top
         handleScroll();
     }

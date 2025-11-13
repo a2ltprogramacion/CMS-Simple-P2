@@ -1,4 +1,4 @@
-# public/admin/config.yml (VERSIÓN 6.4 - Fix Colección Footer)
+# public/admin/config.yml (VERSIÓN 6.6 - Corrección Sintaxis YAML)
 backend:
   name: git-gateway
   branch: main
@@ -18,36 +18,65 @@ collections:
         label: "Ajustes Globales y SEO (Home)" 
         name: "global_settings"
         fields:
-          - {label: "Nombre de la Marca", name: "brand_name", widget: "string", required: true, hint: "Nombre de la Empresa o Marca."}
-          - {label: "Título SEO (Home)", name: "title", widget: "string"}
-          - {label: "Meta Descripción (Home)", name: "description", widget: "text"}
-          - {label: "URL Canónica (Home)", name: "canonical_url", widget: "string", required: false}
-          - {label: "Meta Robots (Home)", name: "robots", widget: "string", required: false}
-          - {label: "Open Graph (Home)", name: "og", widget: "object", required: false, fields: [
-              {label: "Título OG", name: "title", widget: "string", required: false},
-              {label: "Descripción OG", name: "description", widget: "text", required: false},
-              {label: "Imagen OG", name: "image", widget: "image", required: false}
-            ]}
+          - label: "Nombre de la Marca"
+            name: "brand_name"
+            widget: "string"
+            required: true
+            hint: "Nombre de la Empresa o Marca."
+          - label: "Título SEO (Home)"
+            name: "title"
+            widget: "string"
+          - label: "Meta Descripción (Home)"
+            name: "description"
+            widget: "text"
+          - label: "URL Canónica (Home)"
+            name: "canonical_url"
+            widget: "string"
+            required: false
+          - label: "Meta Robots (Home)"
+            name: "robots"
+            widget: "string"
+            required: false
+          - label: "Open Graph (Home)"
+            name: "og"
+            widget: "object"
+            required: false
+            fields:
+              - {label: "Título OG", name: "title", widget: "string", required: false}
+              - {label: "Descripción OG", name: "description", widget: "text", required: false}
+              - {label: "Imagen OG", name: "image", widget: "image", required: false}
+          - label: "Textos de Botones (CTA)"
+            name: "cta_textos"
+            widget: "object"
+            required: false
+            fields:
+              - {label: "Texto (Leer Más - Proyecto Destacado)", name: "leer_mas", widget: "string", default: "Leer Más"}
+              - {label: "Texto (Ver Caso de Estudio - Tarjeta Proyecto)", name: "ver_proyecto", widget: "string", default: "Ver Caso de Estudio &rarr;"}
+              - {label: "Texto (Contactar - Tarjeta Producto)", name: "contactar_producto", widget: "string", default: "Contactar para este producto"}
 
-  # 2. Contenido del home
-  - name: 'home_content'
-    label: 'Contenido Página Principal (Secciones)'
+  # 2. Contenido de Páginas (Home y Proyectos)
+  - name: 'pages'
+    label: 'Contenido de Páginas (Home, Proyectos)'
     files:
+      # --- Archivo 1: Home ---
       - file: "src/content/pages/home.md"
         label: "Contenido de la Home"
         name: "home_page"
         fields:
           - {label: "Plantilla", name: "template", widget: "hidden", default: "home"}
-          - {label: "Sección Hero", name: "hero", widget: "object", required: false, fields: [
-              {label: "Mostrar Sección", name: "show_section", widget: "boolean", default: true},
-              {label: "Título (Hero)", name: "title", widget: "markdown", required: false},
-              {label: "Subtítulo (Hero)", name: "subtitle", widget: "markdown", required: false},
-              {label: "Descripción (Hero)", name: "description", widget: "markdown", required: false},
-              {label: "CTA Texto (Botón)", name: "cta_text", widget: "string", required: false},
-              {label: "CTA URL (Link)", name: "cta_url", widget: "string", required: false},
-              {label: "Logo Blanco (Superpuesto)", name: "image_logo", widget: "image", required: false, hint: "Imagen/Logo principal que se superpone."},
-              {label: "Imagen Principal (Fondo)", name: "image_main", widget: "image", required: false, hint: "Imagen de fondo con transparencia."}
-            ]}
+          - label: "Sección Hero"
+            name: "hero"
+            widget: "object"
+            required: false
+            fields:
+              - {label: "Mostrar Sección", name: "show_section", widget: "boolean", default: true}
+              - {label: "Título (Hero)", name: "title", widget: "markdown", required: false}
+              - {label: "Subtítulo (Hero)", name: "subtitle", widget: "markdown", required: false}
+              - {label: "Descripción (Hero)", name: "description", widget: "markdown", required: false}
+              - {label: "CTA Texto (Botón)", name: "cta_text", widget: "string", required: false}
+              - {label: "CTA URL (Link)", name: "cta_url", widget: "string", required: false}
+              - {label: "Logo Blanco (Superpuesto)", name: "image_logo", widget: "image", required: false}
+              - {label: "Imagen Principal (Fondo)", name: "image_main", widget: "image", required: false}
           - label: "Bloque Cualidades de Marca (Acordeón)"
             name: "cualidades_marca"
             widget: "object"
@@ -72,26 +101,41 @@ collections:
               - {label: "Mostrar Sección", name: "show_section", widget: "boolean", default: true}
               - {label: "Imagen/Logo (Grid)", name: "image", widget: "image", required: false}
               - {label: "Título", name: "title", widget: "markdown", required: false}
-              - {label: "Subtítulo", name: "subtitle", widget: "markdown", required: false}
-              - {label: "Descripción Principal", name: "description", widget: "markdown", required: false, hint: "Texto en la barra superpuesta."}
-              - {label: "Título Misión", name: "mision_title", widget: "string", required: false}
+              - {label: "Subtítulo", name: "subtitle", widget: "markdown", required: false, hint: "Usado en la fusión Nosotros/Productos (Req #4)"}
+              - {label: "Descripción Principal", name: "description", widget: "markdown", required: false, hint: "Usado en la fusión Nosotros/Productos (Req #4)"}
+              - {label: "Título Misión", name: "mision_title", widget: "string", required: false, hint: "Si la fusión está activa, estos campos (misión/visión) no se usan."}
               - {label: "Texto Misión", name: "mision_text", widget: "markdown", required: false}
               - {label: "Título Visión", name: "vision_title", widget: "string", required: false}
               - {label: "Texto Visión", name: "vision_text", widget: "markdown", required: false}
-          - label: "Sección Productos (Home)"
+              - label: "Productos Destacados (Fusión Req #4)"
+                name: "lista_destacados_productos"
+                widget: "relation"
+                collection: "productos"
+                multiple: true
+                min: 4
+                max: 4
+                required: false
+                search_fields: ["title"]
+                value_field: "title"
+                display_fields: ["title"]
+                hint: "Selecciona los 4 productos que quieres mostrar en la sección 'Nosotros' fusionada."
+          - label: "Sección Productos (Grid Completo)"
             name: "productos"
             widget: "object"
             required: false
             fields:
-              - {label: "Mostrar Sección", name: "show_section", widget: "boolean", default: true}
+              - {label: "Mostrar Sección", name: "show_section", widget: "boolean", default: true, hint: "Desactivar esto si se usa la Fusión (Req #4)."}
               - {label: "Título (Productos)", name: "title", widget: "text", required: false}
               - {label: "Subtítulo (Productos)", name: "subtitle", widget: "text", required: false}
-          - {label: "Sección Proyectos (Home)", name: "proyectos", widget: "object", required: false, fields: [
-              {label: "Mostrar Sección", name: "show_section", widget: "boolean", default: true},
-              {label: "Título (Proyectos)", name: "title", widget: "text", required: false},
-              {label: "Subtítulo (Proyectos)", name: "subtitle", widget: "text", required: false},
-              {label: "Proyectos Destacados (Selección Manual)", name: "lista_destacados", widget: "relation", collection: "proyectos", multiple: true, required: false, search_fields: ["titulo", "client_name"], value_field: "titulo", display_fields: ["titulo"], hint: "Selecciona los proyectos que quieres mostrar en el Home. (Recomendado: 6)"}
-            ]}
+          - label: "Sección Proyectos (Home)"
+            name: "proyectos"
+            widget: "object"
+            required: false
+            fields:
+              - {label: "Mostrar Sección", name: "show_section", widget: "boolean", default: true}
+              - {label: "Título (Proyectos)", name: "title", widget: "text", required: false}
+              - {label: "Subtítulo (Proyectos)", name: "subtitle", widget: "text", required: false}
+              - {label: "Proyectos Destacados (Selección Manual)", name: "lista_destacados", widget: "relation", collection: "proyectos", multiple: true, required: false, min: 4, max: 4, search_fields: ["titulo", "client_name"], value_field: "titulo", display_fields: ["titulo"], hint: "Selecciona los 4 proyectos que quieres mostrar en el Home (1 Grande + 3 Pequeños)."}
           - label: "Sección Clientes (Home)"
             name: "clientes"
             widget: "object"
@@ -110,68 +154,128 @@ collections:
                 display_fields: ["titulo"]
                 hint: "Selecciona los 12 clientes que quieres mostrar en la rejilla 3x4."
               - {label: "Mostrar Scroller Infinito (4ta fila)", name: "show_scroller", widget: "boolean", default: true}
-          - {label: "Sección Testimonios (Carrusel)", name: "testimonios", widget: "object", required: false, fields: [
-              {label: "Mostrar Sección", name: "show_section", widget: "boolean", default: true},
-              {label: "Título (Testimonios)", name: "title", widget: "text", required: false},
-              {label: "Lista de Testimonios", name: "lista", widget: "list", required: false, fields: [
-                  {label: "Texto del Testimonio", name: "quote", widget: "markdown", required: true},
-                  {label: "Autor", name: "author", widget: "text", required: false},
-                  {label: "Google Review Embed (HTML)", name: "google_review_embed", widget: "text", required: false}
-                ]}
-            ]}
+          - label: "Sección Testimonios (Carrusel)"
+            name: "testimonios"
+            widget: "object"
+            required: false
+            fields:
+              - {label: "Mostrar Sección", name: "show_section", widget: "boolean", default: true}
+              - {label: "Título (Testimonios)", name: "title", widget: "text", required: false}
+              - label: "Lista de Testimonios"
+                name: "lista"
+                widget: "list"
+                required: false
+                fields:
+                  - {label: "Texto del Testimonio", name: "quote", widget: "markdown", required: true}
+                  - {label: "Autor", name: "author", widget: "text", required: false}
+                  - {label: "Google Review Embed (HTML)", name: "google_review_embed", widget: "text", required: false}
+      
+      # --- Archivo 2: Página de Proyectos ---
+      - file: "src/content/pages/proyectos.md"
+        label: "Contenido Página de Proyectos"
+        name: "proyectos_page"
+        fields:
+          - label: "Plantilla"
+            name: "template"
+            widget: "hidden"
+            default: "proyectos"
+          - label: "Título (SEO)"
+            name: "title"
+            widget: "string"
+            required: true
+          - label: "Descripción (SEO)"
+            name: "description"
+            widget: "string"
+            required: false
+          - label: "H1 (Cabecera)"
+            name: "h1"
+            widget: "string"
+            required: true
+            default: "Nuestros Proyectos"
+          - label: "H2 (Proyecto Reciente)"
+            name: "h2_reciente"
+            widget: "string"
+            required: true
+            default: "Proyecto Reciente"
+          - label: "H2 (Archivo de Proyectos)"
+            name: "h2_archivo"
+            widget: "string"
+            required: true
+            default: "Archivo de Proyectos"
 
   # 3. Colección de Productos
-  - {name: 'productos', label: 'Colección de Productos', folder: 'src/content/productos', create: true, slug: '{{slug}}', identifier_field: 'title', fields: [
-      {label: "Nombre del Producto", name: "title", widget: "text", required: true},
-      {label: "Subtítulo (Miniatura)", name: "subtitle", widget: "text", required: false},
-      {label: "Descripción Completa", name: "description", widget: "markdown", required: false},
-      {label: "Imagen Principal (Nítida)", name: "image", widget: "image", required: false}
-    ]}
+  - name: 'productos'
+    label: 'Colección de Productos'
+    folder: 'src/content/productos'
+    create: true
+    slug: '{{slug}}'
+    identifier_field: 'title'
+    fields:
+      - {label: "Nombre del Producto", name: "title", widget: "text", required: true}
+      - {label: "Subtítulo (Miniatura)", name: "subtitle", widget: "text", required: false}
+      - {label: "Descripción Completa", name: "description", widget: "markdown", required: false}
+      - {label: "Imagen Principal (Nítida)", name: "image", widget: "image", required: false}
 
   # 4. Colección de Proyectos
-  - {name: 'proyectos', label: 'Proyectos / Portafolio', folder: 'src/content/proyectos', create: true, slug: '{{slug}}', identifier_field: 'titulo', fields: [
-      {label: "Slug (URL Amigable)", name: "slug", widget: "string", hint: "Parte final de la URL, ej: mi-primer-proyecto.", required: true},
-      {label: "Cliente (Línea 1 Tarjeta)", name: "client_name", widget: "text", required: true},
-      {label: "Título del Proyecto (Línea 2 Tarjeta)", name: "titulo", widget: "text", required: true},
-      {label: "Servicios Realizados", name: "services_list", widget: "relation", collection: "productos", multiple: true, search_fields: ["title"], value_field: "title", display_fields: ["title"], required: false, hint: "ACTUALIZADO: Relacionar con Productos."},
-      {label: "Fecha", name: "date", widget: "datetime", time_format: false, date_format: "YYYY-MM-DD", required: false},
-      {label: "Resumen (Descripción Tarjeta)", name: "summary", widget: "markdown", required: false, hint: "Descripción con fondo gris en la tarjeta."},
-      {label: "Contenido Detallado (Página Interna)", name: "project_details", widget: "markdown", required: false},
-      {label: "Galería de Fotos (Página Interna)", name: "gallery", widget: "list", required: false, fields: [{label: "Imagen", name: "image_path", widget: "image"}]}
-    ]}
+  - name: 'proyectos'
+    label: 'Proyectos / Portafolio'
+    folder: 'src/content/proyectos'
+    create: true
+    slug: '{{slug}}'
+    identifier_field: 'titulo'
+    fields:
+      - {label: "Slug (URL Amigable)", name: "slug", widget: "string", hint: "Parte final de la URL, ej: mi-primer-proyecto.", required: true}
+      - {label: "Cliente (Línea 1 Tarjeta)", name: "client_name", widget: "text", required: true}
+      - {label: "Título del Proyecto (Línea 2 Tarjeta)", name: "titulo", widget: "text", required: true}
+      - {label: "Servicios Realizados", name: "services_list", widget: "relation", collection: "productos", multiple: true, search_fields: ["title"], value_field: "title", display_fields: ["title"], required: false}
+      - {label: "Fecha", name: "date", widget: "datetime", time_format: false, date_format: "YYYY-MM-DD", required: false}
+      - {label: "Resumen (Descripción Tarjeta)", name: "summary", widget: "markdown", required: false, hint: "Descripción con fondo gris en la tarjeta."}
+      - {label: "Contenido Detallado (Página Interna)", name: "project_details", widget: "markdown", required: false}
+      - {label: "Galería de Fotos (Página Interna)", name: "gallery", widget: "list", required: false, fields: [{label: "Imagen", name: "image_path", widget: "image"}]}
 
   # 5. Colección de Clientes
-  - {name: 'clientes', label: 'Colección de Clientes', folder: 'src/content/clientes', create: true, slug: '{{slug}}', identifier_field: 'titulo', fields: [
-      {label: "Slug (URL Amigable)", name: "slug", widget: "string", hint: "ej: nombre-cliente", required: true},
-      {label: "Nombre del Cliente (Identificador)", name: "titulo", widget: "string", required: true},
-      {label: "Logo del Cliente", name: "logo", widget: "image", required: true},
-      {label: "Sitio Web (Opcional)", name: "url", widget: "string", required: false}
-    ]}
+  - name: 'clientes'
+    label: 'Colección de Clientes'
+    folder: 'src/content/clientes'
+    create: true
+    slug: '{{slug}}'
+    identifier_field: 'titulo'
+    fields:
+      - {label: "Slug (URL Amigable)", name: "slug", widget: "string", hint: "ej: nombre-cliente", required: true}
+      - {label: "Nombre del Cliente (Identificador)", name: "titulo", widget: "string", required: true}
+      - {label: "Logo del Cliente", name: "logo", widget: "image", required: true}
+      - {label: "Sitio Web (Opcional)", name: "url", widget: "string", required: false}
 
   # 6. Información de Contacto
-  - {name: 'informacion-de-contacto', label: 'Información de Contacto', files: [
-      {file: "src/content/informacion-de-contacto/general.yml", label: "Información General de Contacto", name: "general", fields: [
-          {label: "Número de WhatsApp", name: "whatsapp", widget: "string", required: false},
-          {label: "Teléfono", name: "phone", widget: "string", required: false},
-          {label: "Correo Electrónico", name: "email", widget: "string", required: false},
-          {label: "Dirección", name: "address", widget: "markdown", required: false},
-          {label: "Logo para Footer", name: "logo_footer", widget: "image", required: false, hint: "Imagen o logo decorativo en la parte inferior."},
-          {label: "Descripción para Footer", name: "footer_description", widget: "text", required: false, hint: "Texto descriptivo que aparece en el footer."},
-          {label: "Título sección Contacto", name: "contact_heading", widget: "text", required: false},
-          {label: "Subtítulo sección Contacto", name: "contact_subheading", widget: "text", required: false},
-          {label: "Mensaje por defecto para WhatsApp", name: "whatsapp_message", widget: "text", required: false},
-          {label: "Mostrar sección de contacto", name: "show_contact_section", widget: "boolean", default: true},
-          {label: "Redes Sociales", name: "social_media", widget: "object", required: false, fields: [
-            {label: "Facebook URL", name: "facebook", widget: "string", required: false},
-            {label: "Instagram URL", name: "instagram", widget: "string", required: false},
-            {label: "Twitter URL", name: "twitter", widget: "string", required: false},
-            {label: "LinkedIn URL", name: "linkedin", widget: "string", required: false},
-            {label: "YouTube URL", name: "youtube", widget: "string", required: false}
-          ]}
-        ]}
-    ]}
+  - name: 'informacion-de-contacto'
+    label: 'Información de Contacto'
+    files:
+      - file: "src/content/informacion-de-contacto/general.yml"
+        label: "Información General de Contacto"
+        name: "general"
+        fields:
+          - {label: "Número de WhatsApp", name: "whatsapp", widget: "string", required: false}
+          - {label: "Teléfono", name: "phone", widget: "string", required: false}
+          - {label: "Correo Electrónico", name: "email", widget: "string", required: false}
+          - {label: "Dirección", name: "address", widget: "markdown", required: false}
+          - {label: "Logo para Footer", name: "logo_footer", widget: "image", required: false}
+          - {label: "Descripción para Footer", name: "footer_description", widget: "text", required: false}
+          - {label: "Título sección Contacto", name: "contact_heading", widget: "text", required: false}
+          - {label: "Subtítulo sección Contacto", name: "contact_subheading", widget: "text", required: false}
+          - {label: "Mensaje por defecto para WhatsApp", name: "whatsapp_message", widget: "text", required: false}
+          - {label: "Mostrar sección de contacto", name: "show_contact_section", widget: "boolean", default: true}
+          - label: "Redes Sociales"
+            name: "social_media"
+            widget: "object"
+            required: false
+            fields:
+              - {label: "Facebook URL", name: "facebook", widget: "string", required: false}
+              - {label: "Instagram URL", name: "instagram", widget: "string", required: false}
+              - {label: "Twitter URL", name: "twitter", widget: "string", required: false}
+              - {label: "LinkedIn URL", name: "linkedin", widget: "string", required: false}
+              - {label: "YouTube URL", name: "youtube", widget: "string", required: false}
   
-  # 7. Navegación del Footer (CORREGIDO V6.4)
+  # 7. Navegación del Footer
   - name: 'footer_navigation'
     label: 'Navegación del Footer'
     files:
@@ -182,7 +286,6 @@ collections:
           - label: "Columnas de Enlaces"
             name: "columns"
             widget: "list"
-            # Esta es la definición de UNA columna
             fields:
               - {label: "Título de Columna", name: "title", widget: "string"}
               - label: "Enlaces de esta Columna"

@@ -1,24 +1,33 @@
 ---
-// @src/pages/proyectos.astro (VERSIÓN 5.7 - Layout Editorial)
-import { getCollection } from 'astro:content';
+// @src/pages/proyectos.astro (VERSIÓN 8.0 - Contenido 100% CMS)
+import { getCollection, getEntry } from 'astro:content'; // getEntry
 import Layout from '../layouts/Layout.astro';
 import ProjectCardV4 from '../components/ProjectCardV4.astro';
-import FeaturedProject from '../components/FeaturedProject.astro'; // Importar nuevo componente
+import FeaturedProject from '../components/FeaturedProject.astro'; 
 
+// NUEVO (Req #2): Cargar contenido de la página
+const pageContent = await getEntry('pages', 'proyectos');
+const pageData = pageContent?.data ?? {};
+
+// Cargar Proyectos (Lógica existente)
 const allProjects = await getCollection('proyectos');
 // @ts-ignore
 const sortedProjects = allProjects.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
 
-// --- NUEVA LÓGICA DE LAYOUT EDITORIAL ---
-// 1. El proyecto más reciente es el "Destacado"
 const featuredProject = sortedProjects[0];
-// 2. El resto son el "Archivo"
 const otherProjects = sortedProjects.slice(1);
+
+// NUEVO (Req #2): Fallbacks para contenido CMS
+const seoTitle = pageData.title ?? "Nuestros Proyectos";
+const seoDesc = pageData.description ?? "Un vistazo a todos los proyectos que hemos realizado.";
+const h1 = pageData.h1 ?? "Nuestros Proyectos";
+const h2_reciente = pageData.h2_reciente ?? "Proyecto Reciente";
+const h2_archivo = pageData.h2_archivo ?? "Archivo de Proyectos";
 ---
 
-<Layout title="Nuestros Proyectos | A2LT" description="Un vistazo a todos los proyectos que hemos realizado.">
+{/* CORREGIDO (Req #2): SEO Dinámico */}
+<Layout title={seoTitle} description={seoDesc}>
   
-  {/* El Header se mantiene igual, con la nueva paleta */}
   <header 
     id="header-proyectos" 
     class="relative h-56 sm:h-80 flex items-center justify-center text-center text-text-inverted"
@@ -28,39 +37,36 @@ const otherProjects = sortedProjects.slice(1);
       style="background-image: url('/assets/uploads/proyectos.png');"
     ></div>
     
-    {/* Capa Oscura (Color Primario/Azul Pizarra) */}
     <div class="absolute top-0 left-0 w-full h-full bg-primary opacity-80"></div>
   
     <div class="relative z-10 px-8 animate-fade-in-up">
+      {/* CORREGIDO (Req #2): H1 Dinámico */}
       <h1 class="text-4xl md:text-5xl font-serif font-bold text-white pt-20">
-        Nuestros Proyectos
+        {h1}
       </h1>
-      <p class="text-lg md:text-xl max-w-2xl mx-auto mt-4 text-white/90 font-sans">
-        Un vistazo a los casos de éxito que hemos construido.
-      </p>
+      {/* (Descripción eliminada del header, ahora solo en SEO) */}
     </div>
   </header>
   
-  {/* --- INICIO DEL NUEVO LAYOUT (V5.7) --- */}
   <section class="py-20 px-8 bg-secondary">
     <div class="container mx-auto">
       <div class="max-w-7xl mx-auto">
         
-        {/* 1. SECCIÓN: PROYECTO DESTACADO */}
         {featuredProject && (
           <div class="mb-16">
-            <h2 class="text-3xl font-serif font-bold text-primary mb-6 text-center lg:text-left">
-              Proyecto Reciente
+            {/* CORREGIDO (Req #2): H2 Dinámico */}
+            <h2 class="text-3xl font-serif font-bold text-white mb-6 text-center lg:text-left">
+              {h2_reciente}
             </h2>
             <FeaturedProject project={featuredProject} />
           </div>
         )}
         
-        {/* 2. SECCIÓN: ARCHIVO DE PROYECTOS */}
         {otherProjects.length > 0 && (
           <div>
-            <h2 class="text-3xl font-serif font-bold text-primary mb-6 text-center lg:text-left">
-              Archivo de Proyectos
+            {/* CORREGIDO (Req #2): H2 Dinámico */}
+            <h2 class="text-3xl font-serif font-bold text-white mb-6 text-center lg:text-left">
+              {h2_archivo}
             </h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
               {otherProjects.map(project => (
@@ -73,5 +79,4 @@ const otherProjects = sortedProjects.slice(1);
       </div>
     </div>
   </section>
-  {/* --- FIN DEL NUEVO LAYOUT (V5.7) --- */}
 </Layout>

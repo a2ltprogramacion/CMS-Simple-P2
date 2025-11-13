@@ -1,4 +1,4 @@
-// @src/content/config.ts (VERSIÓN 6.4 - Colección Legal y Footer)
+// @src/content/config.ts (VERSIÓN 6.5 - Fusion Nosotros/Productos + Gaps CMS)
 import { z, defineCollection } from 'astro:content';
 
 // 1. Colección Productos
@@ -12,10 +12,18 @@ const productosCollection = defineCollection({
   }),
 });
 
-// 2. Colección Páginas (Home)
+// 2. Colección Páginas (Home y Proyectos)
 const paginasCollection = defineCollection({
   type: 'content',
   schema: z.object({
+    // --- Campos de Página (SEO y H1) ---
+    title: z.string().optional(), // NUEVO (Para SEO de pág. Proyectos)
+    description: z.string().optional(), // NUEVO (Para SEO de pág. Proyectos)
+    h1: z.string().optional(), // NUEVO (Para H1 de pág. Proyectos)
+    h2_reciente: z.string().optional(), // NUEVO (pág. Proyectos)
+    h2_archivo: z.string().optional(), // NUEVO (pág. Proyectos)
+
+    // --- Campos de Sección (Home) ---
     template: z.string().optional(),
     hero: z.object({
       show_section: z.boolean().optional().default(true), 
@@ -46,6 +54,8 @@ const paginasCollection = defineCollection({
       mision_text: z.string().optional(),
       vision_title: z.string().optional(),
       vision_text: z.string().optional(),
+      // NUEVO (Req #4): Lista de productos para la fusión
+      lista_destacados_productos: z.array(z.string()).optional(),
     }).optional(),
     productos: z.object({
       show_section: z.boolean().optional().default(true), 
@@ -115,6 +125,12 @@ const ajustesCollection = defineCollection({
       description: z.string().optional(),
       image: z.string().optional(),
     }).optional(),
+    // NUEVO (Req #2): Textos de Botones
+    cta_textos: z.object({
+      ver_proyecto: z.string().optional(),
+      leer_mas: z.string().optional(),
+      contactar_producto: z.string().optional(),
+    }).optional(),
   }),
 });
 
@@ -146,9 +162,8 @@ const contactoCollection = defineCollection({
 const footerNavigationCollection = defineCollection({
   type: 'data',
   schema: z.object({
-    // Un array de columnas de enlaces
     columns: z.array(z.object({
-      title: z.string(), // Título de la columna (p.ej. "Navegación")
+      title: z.string(),
       links: z.array(z.object({
         text: z.string(),
         url: z.string(),
@@ -169,11 +184,11 @@ const legalCollection = defineCollection({
 // --- Exportaciones ---
 export const collections = {
   'productos': productosCollection,
-  'pages': paginasCollection,
+  'pages': paginasCollection, // 'pages' ahora gestiona home.md y proyectos.md
   'proyectos': proyectosCollection,
   'clientes': clientesCollection,
   'ajustes': ajustesCollection,
   'informacion-de-contacto': contactoCollection,
-  'footer_navigation': footerNavigationCollection, // CORREGIDO
+  'footer_navigation': footerNavigationCollection, 
   'legal': legalCollection,
 };
