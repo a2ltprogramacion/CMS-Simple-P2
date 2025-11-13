@@ -1,4 +1,4 @@
-# public/admin/config.yml (VERSIÓN 6.6 - Corrección Sintaxis YAML)
+# public/admin/config.yml (VERSIÓN 6.7 - Sintaxis YAML 100% Corregida)
 backend:
   name: git-gateway
   branch: main
@@ -42,17 +42,35 @@ collections:
             widget: "object"
             required: false
             fields:
-              - {label: "Título OG", name: "title", widget: "string", required: false}
-              - {label: "Descripción OG", name: "description", widget: "text", required: false}
-              - {label: "Imagen OG", name: "image", widget: "image", required: false}
+              - label: "Título OG"
+                name: "title"
+                widget: "string"
+                required: false
+              - label: "Descripción OG"
+                name: "description"
+                widget: "text"
+                required: false
+              - label: "Imagen OG"
+                name: "image"
+                widget: "image"
+                required: false
           - label: "Textos de Botones (CTA)"
             name: "cta_textos"
             widget: "object"
             required: false
             fields:
-              - {label: "Texto (Leer Más - Proyecto Destacado)", name: "leer_mas", widget: "string", default: "Leer Más"}
-              - {label: "Texto (Ver Caso de Estudio - Tarjeta Proyecto)", name: "ver_proyecto", widget: "string", default: "Ver Caso de Estudio &rarr;"}
-              - {label: "Texto (Contactar - Tarjeta Producto)", name: "contactar_producto", widget: "string", default: "Contactar para este producto"}
+              - label: "Texto (Leer Más - Proyecto Destacado)"
+                name: "leer_mas"
+                widget: "string"
+                default: "Leer Más"
+              - label: "Texto (Ver Caso de Estudio - Tarjeta Proyecto)"
+                name: "ver_proyecto"
+                widget: "string"
+                default: "Ver Caso de Estudio &rarr;"
+              - label: "Texto (Contactar - Tarjeta Producto)"
+                name: "contactar_producto"
+                widget: "string"
+                default: "Contactar para este producto"
 
   # 2. Contenido de Páginas (Home y Proyectos)
   - name: 'pages'
@@ -63,50 +81,123 @@ collections:
         label: "Contenido de la Home"
         name: "home_page"
         fields:
-          - {label: "Plantilla", name: "template", widget: "hidden", default: "home"}
+          - label: "Plantilla"
+            name: "template"
+            widget: "hidden"
+            default: "home"
           - label: "Sección Hero"
             name: "hero"
             widget: "object"
             required: false
             fields:
-              - {label: "Mostrar Sección", name: "show_section", widget: "boolean", default: true}
-              - {label: "Título (Hero)", name: "title", widget: "markdown", required: false}
-              - {label: "Subtítulo (Hero)", name: "subtitle", widget: "markdown", required: false}
-              - {label: "Descripción (Hero)", name: "description", widget: "markdown", required: false}
-              - {label: "CTA Texto (Botón)", name: "cta_text", widget: "string", required: false}
-              - {label: "CTA URL (Link)", name: "cta_url", widget: "string", required: false}
-              - {label: "Logo Blanco (Superpuesto)", name: "image_logo", widget: "image", required: false}
-              - {label: "Imagen Principal (Fondo)", name: "image_main", widget: "image", required: false}
+              - label: "Mostrar Sección"
+                name: "show_section"
+                widget: "boolean"
+                default: true
+              - label: "Título (Hero)"
+                name: "title"
+                widget: "markdown"
+                required: false
+              - label: "Subtítulo (Hero)"
+                name: "subtitle"
+                widget: "markdown"
+                required: false
+              - label: "Descripción (Hero)"
+                name: "description"
+                widget: "markdown"
+                required: false
+              - label: "CTA Texto (Botón)"
+                name: "cta_text"
+                widget: "string"
+                required: false
+              - label: "CTA URL (Link)"
+                name: "cta_url"
+                widget: "string"
+                required: false
+              - label: "Logo Blanco (Superpuesto)"
+                name: "image_logo"
+                widget: "image"
+                required: false
+              - label: "Imagen Principal (Fondo)"
+                name: "image_main"
+                widget: "image"
+                required: false
           - label: "Bloque Cualidades de Marca (Acordeón)"
             name: "cualidades_marca"
             widget: "object"
             required: false
             fields:
-              - {label: "Mostrar Sección", name: "show_section", widget: "boolean", default: true}
+              - label: "Mostrar Sección"
+                name: "show_section"
+                widget: "boolean"
+                default: true
               - label: "Tarjetas de Cualidades"
                 name: "items"
                 widget: "list"
                 min: 3
                 max: 4
                 fields:
-                  - {label: "Título (Cualidad)", name: "title", widget: "string", required: true}
-                  - {label: "Descripción Corta", name: "description", widget: "string", required: true}
-                  - {label: "Imagen de Fondo (Acordeón)", name: "image_fondo", widget: "image", required: true, hint: "Imagen principal que se mostrará al expandir."}
-                  - {label: "Icono (Opcional, sin uso actual)", name: "icon", widget: "image", required: false}
+                  - label: "Título (Cualidad)"
+                    name: "title"
+                    widget: "string"
+                    required: true
+                  - label: "Descripción Corta"
+                    name: "description"
+                    widget: "string"
+                    required: true
+                  - label: "Imagen de Fondo (Acordeón)"
+                    name: "image_fondo"
+                    widget: "image"
+                    required: true
+                    hint: "Imagen principal que se mostrará al expandir."
+                  - label: "Icono (Opcional, sin uso actual)"
+                    name: "icon"
+                    widget: "image"
+                    required: false
           - label: "Sección Nosotros (Misión/Visión)"
             name: "nosotros"
             widget: "object"
             required: false
             fields:
-              - {label: "Mostrar Sección", name: "show_section", widget: "boolean", default: true}
-              - {label: "Imagen/Logo (Grid)", name: "image", widget: "image", required: false}
-              - {label: "Título", name: "title", widget: "markdown", required: false}
-              - {label: "Subtítulo", name: "subtitle", widget: "markdown", required: false, hint: "Usado en la fusión Nosotros/Productos (Req #4)"}
-              - {label: "Descripción Principal", name: "description", widget: "markdown", required: false, hint: "Usado en la fusión Nosotros/Productos (Req #4)"}
-              - {label: "Título Misión", name: "mision_title", widget: "string", required: false, hint: "Si la fusión está activa, estos campos (misión/visión) no se usan."}
-              - {label: "Texto Misión", name: "mision_text", widget: "markdown", required: false}
-              - {label: "Título Visión", name: "vision_title", widget: "string", required: false}
-              - {label: "Texto Visión", name: "vision_text", widget: "markdown", required: false}
+              - label: "Mostrar Sección"
+                name: "show_section"
+                widget: "boolean"
+                default: true
+              - label: "Imagen/Logo (Grid)"
+                name: "image"
+                widget: "image"
+                required: false
+              - label: "Título"
+                name: "title"
+                widget: "markdown"
+                required: false
+              - label: "Subtítulo"
+                name: "subtitle"
+                widget: "markdown"
+                required: false
+                hint: "Usado en la fusión Nosotros/Productos (Req #4)"
+              - label: "Descripción Principal"
+                name: "description"
+                widget: "markdown"
+                required: false
+                hint: "Usado en la fusión Nosotros/Productos (Req #4)"
+              - label: "Título Misión"
+                name: "mision_title"
+                widget: "string"
+                required: false
+                hint: "Si la fusión está activa, estos campos (misión/visión) no se usan."
+              - label: "Texto Misión"
+                name: "mision_text"
+                widget: "markdown"
+                required: false
+              - label: "Título Visión"
+                name: "vision_title"
+                widget: "string"
+                required: false
+              - label: "Texto Visión"
+                name: "vision_text"
+                widget: "markdown"
+                required: false
               - label: "Productos Destacados (Fusión Req #4)"
                 name: "lista_destacados_productos"
                 widget: "relation"
@@ -124,25 +215,61 @@ collections:
             widget: "object"
             required: false
             fields:
-              - {label: "Mostrar Sección", name: "show_section", widget: "boolean", default: true, hint: "Desactivar esto si se usa la Fusión (Req #4)."}
-              - {label: "Título (Productos)", name: "title", widget: "text", required: false}
-              - {label: "Subtítulo (Productos)", name: "subtitle", widget: "text", required: false}
+              - label: "Mostrar Sección"
+                name: "show_section"
+                widget: "boolean"
+                default: true
+                hint: "Desactivar esto si se usa la Fusión (Req #4)."
+              - label: "Título (Productos)"
+                name: "title"
+                widget: "text"
+                required: false
+              - label: "Subtítulo (Productos)"
+                name: "subtitle"
+                widget: "text"
+                required: false
           - label: "Sección Proyectos (Home)"
             name: "proyectos"
             widget: "object"
             required: false
             fields:
-              - {label: "Mostrar Sección", name: "show_section", widget: "boolean", default: true}
-              - {label: "Título (Proyectos)", name: "title", widget: "text", required: false}
-              - {label: "Subtítulo (Proyectos)", name: "subtitle", widget: "text", required: false}
-              - {label: "Proyectos Destacados (Selección Manual)", name: "lista_destacados", widget: "relation", collection: "proyectos", multiple: true, required: false, min: 4, max: 4, search_fields: ["titulo", "client_name"], value_field: "titulo", display_fields: ["titulo"], hint: "Selecciona los 4 proyectos que quieres mostrar en el Home (1 Grande + 3 Pequeños)."}
+              - label: "Mostrar Sección"
+                name: "show_section"
+                widget: "boolean"
+                default: true
+              - label: "Título (Proyectos)"
+                name: "title"
+                widget: "text"
+                required: false
+              - label: "Subtítulo (Proyectos)"
+                name: "subtitle"
+                widget: "text"
+                required: false
+              - label: "Proyectos Destacados (Selección Manual)"
+                name: "lista_destacados"
+                widget: "relation"
+                collection: "proyectos"
+                multiple: true
+                required: false
+                min: 4
+                max: 4
+                search_fields: ["titulo", "client_name"]
+                value_field: "titulo"
+                display_fields: ["titulo"]
+                hint: "Selecciona los 4 proyectos que quieres mostrar en el Home (1 Grande + 3 Pequeños)."
           - label: "Sección Clientes (Home)"
             name: "clientes"
             widget: "object"
             required: false
             fields:
-              - {label: "Mostrar Sección", name: "show_section", widget: "boolean", default: true}
-              - {label: "Título (Clientes)", name: "title", widget: "text", required: false}
+              - label: "Mostrar Sección"
+                name: "show_section"
+                widget: "boolean"
+                default: true
+              - label: "Título (Clientes)"
+                name: "title"
+                widget: "text"
+                required: false
               - label: "Clientes Destacados (Rejilla 3x4)"
                 name: "lista_destacados"
                 widget: "relation"
@@ -153,22 +280,40 @@ collections:
                 value_field: "titulo"
                 display_fields: ["titulo"]
                 hint: "Selecciona los 12 clientes que quieres mostrar en la rejilla 3x4."
-              - {label: "Mostrar Scroller Infinito (4ta fila)", name: "show_scroller", widget: "boolean", default: true}
+              - label: "Mostrar Scroller Infinito (4ta fila)"
+                name: "show_scroller"
+                widget: "boolean"
+                default: true
           - label: "Sección Testimonios (Carrusel)"
             name: "testimonios"
             widget: "object"
             required: false
             fields:
-              - {label: "Mostrar Sección", name: "show_section", widget: "boolean", default: true}
-              - {label: "Título (Testimonios)", name: "title", widget: "text", required: false}
+              - label: "Mostrar Sección"
+                name: "show_section"
+                widget: "boolean"
+                default: true
+              - label: "Título (Testimonios)"
+                name: "title"
+                widget: "text"
+                required: false
               - label: "Lista de Testimonios"
                 name: "lista"
                 widget: "list"
                 required: false
                 fields:
-                  - {label: "Texto del Testimonio", name: "quote", widget: "markdown", required: true}
-                  - {label: "Autor", name: "author", widget: "text", required: false}
-                  - {label: "Google Review Embed (HTML)", name: "google_review_embed", widget: "text", required: false}
+                  - label: "Texto del Testimonio"
+                    name: "quote"
+                    widget: "markdown"
+                    required: true
+                  - label: "Autor"
+                    name: "author"
+                    widget: "text"
+                    required: false
+                  - label: "Google Review Embed (HTML)"
+                    name: "google_review_embed"
+                    widget: "text"
+                    required: false
       
       # --- Archivo 2: Página de Proyectos ---
       - file: "src/content/pages/proyectos.md"
@@ -211,10 +356,22 @@ collections:
     slug: '{{slug}}'
     identifier_field: 'title'
     fields:
-      - {label: "Nombre del Producto", name: "title", widget: "text", required: true}
-      - {label: "Subtítulo (Miniatura)", name: "subtitle", widget: "text", required: false}
-      - {label: "Descripción Completa", name: "description", widget: "markdown", required: false}
-      - {label: "Imagen Principal (Nítida)", name: "image", widget: "image", required: false}
+      - label: "Nombre del Producto"
+        name: "title"
+        widget: "text"
+        required: true
+      - label: "Subtítulo (Miniatura)"
+        name: "subtitle"
+        widget: "text"
+        required: false
+      - label: "Descripción Completa"
+        name: "description"
+        widget: "markdown"
+        required: false
+      - label: "Imagen Principal (Nítida)"
+        name: "image"
+        widget: "image"
+        required: false
 
   # 4. Colección de Proyectos
   - name: 'proyectos'
@@ -224,14 +381,51 @@ collections:
     slug: '{{slug}}'
     identifier_field: 'titulo'
     fields:
-      - {label: "Slug (URL Amigable)", name: "slug", widget: "string", hint: "Parte final de la URL, ej: mi-primer-proyecto.", required: true}
-      - {label: "Cliente (Línea 1 Tarjeta)", name: "client_name", widget: "text", required: true}
-      - {label: "Título del Proyecto (Línea 2 Tarjeta)", name: "titulo", widget: "text", required: true}
-      - {label: "Servicios Realizados", name: "services_list", widget: "relation", collection: "productos", multiple: true, search_fields: ["title"], value_field: "title", display_fields: ["title"], required: false}
-      - {label: "Fecha", name: "date", widget: "datetime", time_format: false, date_format: "YYYY-MM-DD", required: false}
-      - {label: "Resumen (Descripción Tarjeta)", name: "summary", widget: "markdown", required: false, hint: "Descripción con fondo gris en la tarjeta."}
-      - {label: "Contenido Detallado (Página Interna)", name: "project_details", widget: "markdown", required: false}
-      - {label: "Galería de Fotos (Página Interna)", name: "gallery", widget: "list", required: false, fields: [{label: "Imagen", name: "image_path", widget: "image"}]}
+      - label: "Slug (URL Amigable)"
+        name: "slug"
+        widget: "string"
+        hint: "Parte final de la URL, ej: mi-primer-proyecto."
+        required: true
+      - label: "Cliente (Línea 1 Tarjeta)"
+        name: "client_name"
+        widget: "text"
+        required: true
+      - label: "Título del Proyecto (Línea 2 Tarjeta)"
+        name: "titulo"
+        widget: "text"
+        required: true
+      - label: "Servicios Realizados"
+        name: "services_list"
+        widget: "relation"
+        collection: "productos"
+        multiple: true
+        search_fields: ["title"]
+        value_field: "title"
+        display_fields: ["title"]
+        required: false
+      - label: "Fecha"
+        name: "date"
+        widget: "datetime"
+        time_format: false
+        date_format: "YYYY-MM-DD"
+        required: false
+      - label: "Resumen (Descripción Tarjeta)"
+        name: "summary"
+        widget: "markdown"
+        required: false
+        hint: "Descripción con fondo gris en la tarjeta."
+      - label: "Contenido Detallado (Página Interna)"
+        name: "project_details"
+        widget: "markdown"
+        required: false
+      - label: "Galería de Fotos (Página Interna)"
+        name: "gallery"
+        widget: "list"
+        required: false
+        fields:
+          - label: "Imagen"
+            name: "image_path"
+            widget: "image"
 
   # 5. Colección de Clientes
   - name: 'clientes'
@@ -241,10 +435,23 @@ collections:
     slug: '{{slug}}'
     identifier_field: 'titulo'
     fields:
-      - {label: "Slug (URL Amigable)", name: "slug", widget: "string", hint: "ej: nombre-cliente", required: true}
-      - {label: "Nombre del Cliente (Identificador)", name: "titulo", widget: "string", required: true}
-      - {label: "Logo del Cliente", name: "logo", widget: "image", required: true}
-      - {label: "Sitio Web (Opcional)", name: "url", widget: "string", required: false}
+      - label: "Slug (URL Amigable)"
+        name: "slug"
+        widget: "string"
+        hint: "ej: nombre-cliente"
+        required: true
+      - label: "Nombre del Cliente (Identificador)"
+        name: "titulo"
+        widget: "string"
+        required: true
+      - label: "Logo del Cliente"
+        name: "logo"
+        widget: "image"
+        required: true
+      - label: "Sitio Web (Opcional)"
+        name: "url"
+        widget: "string"
+        required: false
 
   # 6. Información de Contacto
   - name: 'informacion-de-contacto'
@@ -254,26 +461,71 @@ collections:
         label: "Información General de Contacto"
         name: "general"
         fields:
-          - {label: "Número de WhatsApp", name: "whatsapp", widget: "string", required: false}
-          - {label: "Teléfono", name: "phone", widget: "string", required: false}
-          - {label: "Correo Electrónico", name: "email", widget: "string", required: false}
-          - {label: "Dirección", name: "address", widget: "markdown", required: false}
-          - {label: "Logo para Footer", name: "logo_footer", widget: "image", required: false}
-          - {label: "Descripción para Footer", name: "footer_description", widget: "text", required: false}
-          - {label: "Título sección Contacto", name: "contact_heading", widget: "text", required: false}
-          - {label: "Subtítulo sección Contacto", name: "contact_subheading", widget: "text", required: false}
-          - {label: "Mensaje por defecto para WhatsApp", name: "whatsapp_message", widget: "text", required: false}
-          - {label: "Mostrar sección de contacto", name: "show_contact_section", widget: "boolean", default: true}
+          - label: "Número de WhatsApp"
+            name: "whatsapp"
+            widget: "string"
+            required: false
+          - label: "Teléfono"
+            name: "phone"
+            widget: "string"
+            required: false
+          - label: "Correo Electrónico"
+            name: "email"
+            widget: "string"
+            required: false
+          - label: "Dirección"
+            name: "address"
+            widget: "markdown"
+            required: false
+          - label: "Logo para Footer"
+            name: "logo_footer"
+            widget: "image"
+            required: false
+          - label: "Descripción para Footer"
+            name: "footer_description"
+            widget: "text"
+            required: false
+          - label: "Título sección Contacto"
+            name: "contact_heading"
+            widget: "text"
+            required: false
+          - label: "Subtítulo sección Contacto"
+            name: "contact_subheading"
+            widget: "text"
+            required: false
+          - label: "Mensaje por defecto para WhatsApp"
+            name: "whatsapp_message"
+            widget: "text"
+            required: false
+          - label: "Mostrar sección de contacto"
+            name: "show_contact_section"
+            widget: "boolean"
+            default: true
           - label: "Redes Sociales"
             name: "social_media"
             widget: "object"
             required: false
             fields:
-              - {label: "Facebook URL", name: "facebook", widget: "string", required: false}
-              - {label: "Instagram URL", name: "instagram", widget: "string", required: false}
-              - {label: "Twitter URL", name: "twitter", widget: "string", required: false}
-              - {label: "LinkedIn URL", name: "linkedin", widget: "string", required: false}
-              - {label: "YouTube URL", name: "youtube", widget: "string", required: false}
+              - label: "Facebook URL"
+                name: "facebook"
+                widget: "string"
+                required: false
+              - label: "Instagram URL"
+                name: "instagram"
+                widget: "string"
+                required: false
+              - label: "Twitter URL"
+                name: "twitter"
+                widget: "string"
+                required: false
+              - label: "LinkedIn URL"
+                name: "linkedin"
+                widget: "string"
+                required: false
+              - label: "YouTube URL"
+                name: "youtube"
+                widget: "string"
+                required: false
   
   # 7. Navegación del Footer
   - name: 'footer_navigation'
@@ -287,13 +539,19 @@ collections:
             name: "columns"
             widget: "list"
             fields:
-              - {label: "Título de Columna", name: "title", widget: "string"}
+              - label: "Título de Columna"
+                name: "title"
+                widget: "string"
               - label: "Enlaces de esta Columna"
                 name: "links"
                 widget: "list"
                 fields:
-                  - {label: "Texto del Enlace", name: "text", widget: "string"}
-                  - {label: "URL del Enlace", name: "url", widget: "string"}
+                  - label: "Texto del Enlace"
+                    name: "text"
+                    widget: "string"
+                  - label: "URL del Enlace"
+                    name: "url"
+                    widget: "string"
   
   # 8. Páginas Legales
   - name: 'legal'
@@ -303,5 +561,11 @@ collections:
     slug: '{{slug}}'
     identifier_field: 'title'
     fields:
-      - {label: "Título del Documento", name: "title", widget: "string", required: true}
-      - {label: "Contenido (Markdown)", name: "body", widget: "markdown", required: true}
+      - label: "Título del Documento"
+        name: "title"
+        widget: "string"
+        required: true
+      - label: "Contenido (Markdown)"
+        name: "body"
+        widget: "markdown"
+        required: true
