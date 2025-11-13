@@ -54,23 +54,6 @@ collections:
                 name: "image"
                 widget: "image"
                 required: false
-          - label: "Textos de Botones (CTA)"
-            name: "cta_textos"
-            widget: "object"
-            required: false
-            fields:
-              - label: "Texto (Leer Más - Proyecto Destacado)"
-                name: "leer_mas"
-                widget: "string"
-                default: "Leer Más"
-              - label: "Texto (Ver Caso de Estudio - Tarjeta Proyecto)"
-                name: "ver_proyecto"
-                widget: "string"
-                default: "Ver Caso de Estudio &rarr;"
-              - label: "Texto (Contactar - Tarjeta Producto)"
-                name: "contactar_producto"
-                widget: "string"
-                default: "Contactar para este producto"
 
   # 2. Contenido de Páginas (Home y Proyectos)
   - name: 'pages'
