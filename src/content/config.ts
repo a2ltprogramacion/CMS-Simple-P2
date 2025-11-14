@@ -1,4 +1,5 @@
-// @src/content/config.ts (VERSIÓN 6.5 - Fusion Nosotros/Productos + Gaps CMS)
+// src/content/config.ts
+// Versión: 1.1 | Fix: TypeScript Inference
 import { z, defineCollection } from 'astro:content';
 
 // 1. Colección Productos
@@ -12,70 +13,54 @@ const productosCollection = defineCollection({
   }),
 });
 
-// 2. Colección Páginas (Home y Proyectos)
+// 2. Colección Páginas
 const paginasCollection = defineCollection({
   type: 'content',
   schema: z.object({
-    // --- Campos de Página (SEO y H1) ---
-    title: z.string().optional(), // NUEVO (Para SEO de pág. Proyectos)
-    description: z.string().optional(), // NUEVO (Para SEO de pág. Proyectos)
-    h1: z.string().optional(), // NUEVO (Para H1 de pág. Proyectos)
-    h2_reciente: z.string().optional(), // NUEVO (pág. Proyectos)
-    h2_archivo: z.string().optional(), // NUEVO (pág. Proyectos)
+    // SEO
+    title: z.string().optional(),
+    description: z.string().optional(),
+    h1: z.string().optional(),
+    header_image: z.string().optional(), // Imagen de cabecera para paginas (ej. proyectos)
+    h2_reciente: z.string().optional(),
+    h2_archivo: z.string().optional(),
 
-    // --- Campos de Sección (Home) ---
+    // Secciones (Sin .default({}) para evitar bloqueo de tipos)
     template: z.string().optional(),
+    
     hero: z.object({
-      show_section: z.boolean().optional().default(true), 
+      show_section: z.boolean().optional(), 
       title: z.string().optional(),
-      subtitle: z.string().optional(),
       description: z.string().optional(), 
       cta_text: z.string().optional(),
       cta_url: z.string().optional(),
-      image_logo: z.string().optional(), 
-      image_main: z.string().optional(), 
     }).optional(),
-    cualidades_marca: z.object({
-      show_section: z.boolean().optional().default(true),
-      items: z.array(z.object({
-        icon: z.string().optional(),
-        title: z.string().optional(),
-        description: z.string().optional(),
-        image_fondo: z.string().optional(),
-      })).optional(),
-    }).optional(),
+
     nosotros: z.object({
-      show_section: z.boolean().optional().default(true), 
-      image: z.string().optional(),
-      title: z.string().optional(),
-      subtitle: z.string().optional(),
-      description: z.string().optional(),
-      mision_title: z.string().optional(),
-      mision_text: z.string().optional(),
-      vision_title: z.string().optional(),
-      vision_text: z.string().optional(),
-      // NUEVO (Req #4): Lista de productos para la fusión
-      lista_destacados_productos: z.array(z.string()).optional(),
+      show_section: z.boolean().optional(), 
+      title: z.string().optional(), 
+      subtitle: z.string().optional(), 
+      description: z.string().optional(), 
+      servicios_lista: z.string().optional(), 
+      lista_destacados_productos: z.array(z.string()).optional(), 
     }).optional(),
-    productos: z.object({
-      show_section: z.boolean().optional().default(true), 
-      title: z.string().optional(),
-      subtitle: z.string().optional(),
-    }).optional(),
+
     proyectos: z.object({ 
-      show_section: z.boolean().optional().default(true),
+      show_section: z.boolean().optional(),
       title: z.string().optional(),
       subtitle: z.string().optional(),
       lista_destacados: z.array(z.string()).optional(),
     }).optional(),
+
     clientes: z.object({
-      show_section: z.boolean().optional().default(true), 
+      show_section: z.boolean().optional(), 
       title: z.string().optional(),
       lista_destacados: z.array(z.string()).optional(),
-      show_scroller: z.boolean().optional().default(true),
+      show_scroller: z.boolean().optional(),
     }).optional(),
+
     testimonios: z.object({ 
-      show_section: z.boolean().optional().default(true),
+      show_section: z.boolean().optional(),
       title: z.string().optional(),
       lista: z.array(z.object({
         quote: z.string(),
@@ -86,7 +71,7 @@ const paginasCollection = defineCollection({
   }),
 });
 
-// 3. Colección Proyectos
+// 3. Colección Proyectos (Añadido slug a data por si acaso, aunque usaremos project.slug)
 const proyectosCollection = defineCollection({
   type: 'content',
   schema: z.object({
@@ -98,6 +83,8 @@ const proyectosCollection = defineCollection({
     summary: z.string().optional(), 
     project_details: z.string().optional(),    
     gallery: z.array(z.object({ image_path: z.string() })).optional(),
+    // Opcional: si en el CMS guardas el slug explícitamente en el frontmatter
+    slug: z.string().optional(),
   }),
 });
 
@@ -111,21 +98,13 @@ const clientesCollection = defineCollection({
   }),
 });
 
-// 5. Colección Ajustes
+// 5. Ajustes
 const ajustesCollection = defineCollection({
   type: 'data',
   schema: z.object({
     brand_name: z.string().optional(),
     title: z.string().optional(),
     description: z.string().optional(),
-    canonical_url: z.string().optional(),
-    robots: z.string().optional(),
-    og: z.object({
-      title: z.string().optional(),
-      description: z.string().optional(),
-      image: z.string().optional(),
-    }).optional(),
-    // NUEVO (Req #2): Textos de Botones
     cta_textos: z.object({
       ver_proyecto: z.string().optional(),
       leer_mas: z.string().optional(),
@@ -134,7 +113,7 @@ const ajustesCollection = defineCollection({
   }),
 });
 
-// 6. Colección Contacto
+// 6. Contacto
 const contactoCollection = defineCollection({
   type: 'data',
   schema: z.object({
@@ -151,14 +130,14 @@ const contactoCollection = defineCollection({
     social_media: z.object({
       facebook: z.string().url().optional(),
       instagram: z.string().url().optional(),
-      twitter: z.string().url().optional(),
-      linkedin: z.string().url().optional(),
-      youtube: z.string().url().optional(),
+      twitter: z.string().optional(),
+      linkedin: z.string().optional(),
+      youtube: z.string().optional(),
     }).optional(),
   }),
 });
 
-// 7. Colección Navegación del Footer (CORREGIDA V6.4)
+// 7. Footer Nav
 const footerNavigationCollection = defineCollection({
   type: 'data',
   schema: z.object({
@@ -172,7 +151,7 @@ const footerNavigationCollection = defineCollection({
   }),
 });
 
-// 8. Colección Páginas Legales
+// 8. Legal
 const legalCollection = defineCollection({
   type: 'content', 
   schema: z.object({
@@ -180,11 +159,9 @@ const legalCollection = defineCollection({
   }),
 });
 
-
-// --- Exportaciones ---
 export const collections = {
   'productos': productosCollection,
-  'pages': paginasCollection, // 'pages' ahora gestiona home.md y proyectos.md
+  'pages': paginasCollection,
   'proyectos': proyectosCollection,
   'clientes': clientesCollection,
   'ajustes': ajustesCollection,

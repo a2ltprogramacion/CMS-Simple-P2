@@ -1,74 +1,74 @@
 ---
-// @src/components/FeaturedProject.astro (VERSIÓN 7.1 - CTA Dinámico)
+// src/components/FeaturedProject.astro
+// Versión: 1.1 | Fix: Slug Access
 import type { CollectionEntry } from 'astro:content';
+import { getEntry } from 'astro:content'; 
 import { mdToHtml } from '../utils/markdown';
-import { getEntry } from 'astro:content'; // NUEVO
 
 export interface Props {
   project: CollectionEntry<'proyectos'>;
 }
+
 const { project } = Astro.props;
 
-// NUEVO: Cargar textos de CTA
+// 1. Config CTA
 const ajustes = await getEntry("ajustes", "home");
 const ctaTextos = ajustes?.data.cta_textos ?? {};
-const ctaText = ctaTextos.leer_mas ?? "Leer Más";
+const ctaText = ctaTextos.leer_mas ?? "Leer Caso Completo";
 
-// Datos del proyecto
-const clientName = project.data.client_name;
-const titulo = project.data.titulo;
-const summary = project.data.summary;
-const image = project.data.image ?? '/assets/uploads/placeholder.jpeg';
-
-// Renderizar HTML si hay resumen
+// 2. Datos
+const { client_name, titulo, summary, image } = project.data;
+const safeImage = image ?? '/assets/uploads/placeholder.jpeg';
 const summaryHtml = summary ? mdToHtml(summary) : null;
 ---
 
 <article class="
-  grid grid-cols-1 lg:grid-cols-2 gap-0 w-full 
-  rounded-lg overflow-hidden 
+  relative w-full rounded-xl overflow-hidden 
   bg-secondary/70 backdrop-blur-md
   border border-white/10
+  grid grid-cols-1 lg:grid-cols-2 gap-0
+  shadow-xl
 ">
-  
-  <div class="relative min-h-[300px] lg:min-h-0">
+  <div class="relative min-h-[300px] lg:min-h-[450px] overflow-hidden group">
     <img 
-      src={image} 
-      alt={`Imagen del proyecto ${titulo}`} 
-      class="absolute inset-0 w-full h-full object-cover" 
+      src={safeImage} 
+      alt={`Proyecto ${titulo}`} 
+      class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
     />
+    <div class="absolute inset-0 bg-gradient-to-t from-primary/90 to-transparent lg:bg-gradient-to-r lg:from-transparent lg:to-primary/90"></div>
   </div>
 
-  <div class="flex flex-col justify-center p-8 md:p-12 lg:p-16">
-    
-    <span class="font-sans text-sm font-bold text-accent-secondary uppercase tracking-wider mb-2">
-      {clientName}
-    </span>
+  <div class="flex flex-col justify-center p-8 md:p-12 lg:p-16 relative z-10">
+    <div class="mb-4">
+      <span class="inline-block py-1 px-3 rounded bg-accent-secondary/10 border border-accent-secondary/20 text-accent-secondary font-sans text-xs font-bold uppercase tracking-widest">
+        {client_name}
+      </span>
+    </div>
    
-    <h2 class="font-serif text-3xl md:text-4xl font-bold text-white mb-4 leading-tight">
+    <h2 class="font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight">
       {titulo}
     </h2>
     
     {summaryHtml && (
-      <div class="prose max-w-none text-text-base/80 mb-6">
+      <div class="prose prose-invert prose-lg max-w-none text-text-base/80 mb-8 prose-strong:text-accent">
         <span set:html={summaryHtml} />
       </div>
     )}
     
-    <div class="mt-auto">
+    <div>
       <a 
         href={`/proyectos/${project.slug}`} 
         class="
-          bg-accent text-text-inverted font-bold 
-          py-3 px-6 text-base 
-          transition-colors duration-300 
-          hover:bg-accent-secondary inline-block hover:no-underline
+          inline-flex items-center justify-center
+          bg-accent text-primary font-bold 
+          py-3 px-8 text-base rounded-sm
+          transition-all duration-300 
+          hover:bg-white hover:text-accent hover:shadow-[0_0_20px_rgba(0,191,255,0.4)]
+          no-underline hover:no-underline
         "
       >
-        {/* CORREGIDO (Req #2): Texto de CTA dinámico */}
         {ctaText}
       </a>
     </div>
   </div>
-
 </article>

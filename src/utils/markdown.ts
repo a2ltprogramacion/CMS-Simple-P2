@@ -1,3 +1,5 @@
+// src/utils/markdown.ts
+// Versión: 1.0 
 import { marked } from 'marked';
 
 // Configure marked to be GitHub-flavored and to add <br> on single line breaks

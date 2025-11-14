@@ -1,11 +1,10 @@
-// @tailwind.config.mjs (VERSIÓN 7.0 - Laboratorio de Innovación)
+// tailwind.config.mjs
+// Versión: 1.5 | Paleta: Cián + Índigo
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
   theme: {
     screens: {
-      'desktop-med': '1366px', 
-      'desktop-lg': '1920px',
       'sm': '640px',
       'md': '768px',
       'lg': '1024px',
@@ -14,7 +13,7 @@ export default {
     },
     extend: {
       colors: {
-        // --- Paleta V7.0 (Futurista / Neón) ---
+        // --- Paleta V1.5 (Tech / Premium) ---
         
         // Fondo Principal (Casi Negro)
         'primary': '#0D0D1F', 
@@ -22,11 +21,11 @@ export default {
         // Fondo Secundario (Azul Oscuro para tarjetas base)
         'secondary': '#1A1A2E', 
         
-        // Acento Principal (CTA, Enlaces)
-        'accent': '#00BFFF', // Azul Eléctrico
+        // Acento Principal (Héroe: CTAs, Enlaces)
+        'accent': '#00BFFF', // Azul Eléctrico (Cián)
         
-        // Acento Secundario (Destaques, Bordes)
-        'accent-secondary': '#D900FF', // Magenta Neón
+        // Acento Secundario (Soporte: Textos, Botones Secundarios)
+        'accent-secondary': '#7F5AF0', // Índigo Digital (Púrpura)
 
         // Texto Principal (Sobre fondos oscuros)
         'text-base': '#E0E0E0', // Gris Claro
@@ -35,12 +34,9 @@ export default {
         'text-inverted': '#0D0D1F', // Casi Negro
       },
       fontFamily: {
-        // 'sans' para párrafos (Claro, legible)
         'sans': ['Lato', 'sans-serif'],
-        // 'serif' para TÍTULOS (Tech, geométrica)
         'serif': ['Space Grotesk', 'sans-serif'],
       },
-      // Habilitamos backdrop-blur para el efecto Glassmorphism
       backdropBlur: {
         'xs': '2px',
       },
